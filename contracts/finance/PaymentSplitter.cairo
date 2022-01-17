@@ -13,11 +13,15 @@ func _total_shares() -> (shares : felt):
 end
 
 @storage_var
+func _total_realeased() -> (released : felt):
+end
+
+@storage_var
 func _shares(address: felt) -> (shares : felt):
 end
 
 @storage_var
-func _realeased() -> (released : felt):
+func _released(address : felt) -> (amount : felt):
 end
 
 @storage_var
@@ -50,7 +54,7 @@ func tot_released{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }() -> (tot_released : felt):
-    let (released) = _realeased.read()
+    let (released) = _totatal_realeased.read()
     return (released)
 end
 
@@ -79,11 +83,39 @@ end
 
 # @dev Getter for the amount of Ether already released to a payee.
 @view
-func released{
+func eth_released{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }(account : felt) -> (released : felt):
+    let (released) = _realeased.read(account)
+    return (released)
+end
+
+# @dev Getter for the amount of `token` tokens already released to a payee. `token` should be the address of an
+# IERC20 contract.
+@view
+func released{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+    }(token : felt, address : felt) -> (released : felt):
+    let (released) = _erc20_realeased.read(token, address)
+    return (released)
+end
+
+# @dev Getter for the address of the payee number `index`.
+@view
+func payee{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+    }(id : felt) -> (payee : felt):
+    let (payee) = _payees.read(id)
+    return (payee)
+end
+
+
 
 # @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned the number of shares at
 # the matching position in the `shares` array.
@@ -153,7 +185,7 @@ func add_payee{
     _total_shares.write(tot_shares + shares)
     return()
 end
-
+# @dev recursively add payees and shares when the contract is deployed
 func add_payee_recursive{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
