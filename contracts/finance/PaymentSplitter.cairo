@@ -7,6 +7,9 @@ from starkware.cairo.common.math import assert_not_zero
 # 
 # storage
 #
+@storage_var
+func _eth_balance() -> (balance : felt):
+end
 
 @storage_var
 func _total_shares() -> (shares : felt):
@@ -115,8 +118,6 @@ func payee{
     return (payee)
 end
 
-
-
 # @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned the number of shares at
 # the matching position in the `shares` array.
 #
@@ -139,6 +140,28 @@ func constructor{
     add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
     return()
 end
+
+# @dev Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the
+# total shares and their previous withdrawals.
+@external
+func release_eth{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+    }(account : felt):
+    let (shares) = _shares.read(account)
+    assert_not_zero(shares)
+
+    let (eth_balance) = _eth_balance.read()
+    let (total_realeased) = _total_realeased.read()
+    let (total_received) = eth_balance + token_released
+    let (released) = _realeased.read(account)
+    let (payment) = pending_payment(account, total_received, released)
+
+    assert_not_zero(payment)
+    _realeased.write(account, payment)
+    let new_total_released = total_realeased + payment
+    _total_realeased.write(new_total_released)
 
 #
 # Internal functions
