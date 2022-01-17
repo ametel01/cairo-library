@@ -4,6 +4,10 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
 
+# 
+# storage
+#
+
 @storage_var
 func _total_shares() -> (shares : felt):
 end
@@ -24,6 +28,11 @@ end
 func _erc20_realeased(ierc20 : felt, address : felt) -> (res : felt):
 end 
 
+#
+# view functions
+#
+
+# @dev Getter for the total shares held by payees.
 @view
 func tot_shares{
         syscall_ptr : felt*, 
@@ -34,6 +43,7 @@ func tot_shares{
     return (shares)
 end
 
+# @dev Getter for the total amount of Ether already released.
 @view
 func tot_released{
         syscall_ptr : felt*, 
@@ -44,6 +54,8 @@ func tot_released{
     return (released)
 end
 
+# @dev Getter for the total amount of `token` already released. `token` 
+# should be the address of an IERC20
 @view
 func token_released{
         syscall_ptr : felt*, 
@@ -54,6 +66,7 @@ func token_released{
     return (token_released)
 end
 
+# @dev Getter for the amount of shares held by an account.
 @view
 func shares{
         syscall_ptr : felt*, 
@@ -64,10 +77,19 @@ func shares{
     return (shares)
 end
 
+# @dev Getter for the amount of Ether already released to a payee.
+@view
+func released{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+    }(account : felt) -> (released : felt):
 
-
-
-
+# @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned the number of shares at
+# the matching position in the `shares` array.
+#
+# All addresses in `payees` must be non-zero. Both arrays must have the same non-zero length, and there must be no
+# duplicates in `payees`.
 @constructor
 func constructor{
         syscall_ptr : felt*, 
@@ -89,7 +111,6 @@ end
 #
 # Internal functions
 #
-
 
 # @dev internal logic for computing the pending payment of an `account` given 
 # the token historical balances and already released amounts.
