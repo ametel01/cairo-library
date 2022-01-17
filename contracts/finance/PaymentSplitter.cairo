@@ -3,6 +3,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
+from Cairo.cairo_library.contracts.finance.ERC20_base import ERC20_transfer
 
 # 
 # storage
@@ -16,19 +17,26 @@ func _total_shares() -> (shares : felt):
 end
 
 @storage_var
-func _total_realeased() -> (released : felt):
+func _total_released() -> (released : felt):
 end
 
 @storage_var
 func _shares(address: felt) -> (shares : felt):
 end
 
+# @dev amount of shares released to an address.
 @storage_var
 func _released(address : felt) -> (amount : felt):
 end
 
 @storage_var
 func _payees(i: felt) -> (payee : felt):
+end
+
+# @dev total amount of token released.
+# @param erc20: address of token contract.
+@storage_var
+func _erc20_total_released(erc20 : felt) -> (amount):
 end
 
 @storage_var
@@ -57,19 +65,19 @@ func tot_released{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }() -> (tot_released : felt):
-    let (released) = _totatal_realeased.read()
+    let (released) = _total_released.read()
     return (released)
 end
 
 # @dev Getter for the total amount of `token` already released. `token` 
-# should be the address of an IERC20
+# should be the address of an IERC20 contract.
 @view
-func token_released{
+func erc20_released{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }(token : felt) -> (tot_released : felt):
-    let (token_released) = _realeased.read()
+    let (token_released) = _erc20_total_released.read(token)
     return (token_released)
 end
 
@@ -91,7 +99,7 @@ func eth_released{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }(account : felt) -> (released : felt):
-    let (released) = _realeased.read(account)
+    let (released) = _released.read(account)
     return (released)
 end
 
@@ -149,19 +157,23 @@ func release_eth{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }(account : felt):
+    alloc_locals
     let (shares) = _shares.read(account)
     assert_not_zero(shares)
-
+    
     let (eth_balance) = _eth_balance.read()
-    let (total_realeased) = _total_realeased.read()
-    let (total_received) = eth_balance + token_released
-    let (released) = _realeased.read(account)
+    let (total_released) = _total_released.read()
+    let total_received = eth_balance + total_released
+    let (released) = _released.read(account)
     let (payment) = pending_payment(account, total_received, released)
 
     assert_not_zero(payment)
-    _realeased.write(account, payment)
-    let new_total_released = total_realeased + payment
-    _total_realeased.write(new_total_released)
+    _released.write(account, payment)
+    let new_total_released = total_released + payment
+    _total_released.write(new_total_released)
+
+    ERC20_transfer(account, payment)
+end
 
 #
 # Internal functions
