@@ -29,10 +29,42 @@ func tot_shares{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-    }() -> (shares : felt):
+    }() -> (tot_shares : felt):
     let (shares) = _total_shares.read()
     return (shares)
 end
+
+@view
+func tot_released{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+    }() -> (tot_released : felt):
+    let (released) = _realeased.read()
+    return (released)
+end
+
+@view
+func token_released{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+    }(token : felt) -> (tot_released : felt):
+    let (token_released) = _realeased.read()
+    return (token_released)
+end
+
+@view
+func shares{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+    }(account : felt) -> (shares : felt):
+    let (shares) = _shares.read(account)
+    return (shares)
+end
+
+
 
 
 
