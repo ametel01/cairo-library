@@ -3,6 +3,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
+#from finance.token.ERC20_base import ERC20_transfer
 from finance.token.ERC20_base import ERC20_transfer
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check,uint256_mul, uint256_unsigned_div_rem
@@ -134,23 +135,23 @@ end
 #
 # All addresses in `payees` must be non-zero. Both arrays must have the same non-zero length, and there must be no
 # duplicates in `payees`.
-@constructor
-func constructor{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(
-        payees_len : felt, 
-        payees : felt*,
-        shares_len : felt,
-        shares : felt*
-    ):
-    assert payees_len = shares_len
-    assert_not_zero(payees_len)
+# @constructor
+# func constructor{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(
+#         payees_len : felt, 
+#         payees : felt*,
+#         shares_len : felt,
+#         shares : felt*
+#     ):
+#     assert payees_len = shares_len
+#     assert_not_zero(payees_len)
 
-   # add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
-    return()
-end
+#    # add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
+#     return()
+# end
 
 # @dev Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the
 # total shares and their previous withdrawals.
@@ -206,43 +207,27 @@ end
 # @param id      The id of the account
 # @param account The address of the payee to add.
 # @param shares_ The number of shares owned by the payee.
-func add_payee{
+func _add_payee{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
     }(
         i : felt, 
         address : felt, 
-        shares : Uint256
+        shares : felt
     ):
     assert_not_zero(address)
-    #assert_not_zero(shares)
+    assert_not_zero(shares)
     let (account_shares) = _shares.read(address)
-    assert account_shares = Uint256(0,0)
 
     _payees.write(i, address)
-    _shares.write(address, shares)
+    let uint_shares = Uint256(shares, 0)
+    _shares.write(address, uint_shares)
     let (tot_shares) = _total_shares.read()
-    let (shares_to_write, _) = uint256_add(tot_shares, shares)
+    let (shares_to_write, _) = uint256_add(tot_shares, uint_shares)
     _total_shares.write(shares_to_write)
     return()
 end
 # @dev recursively add payees and shares when the contract is deployed
-# func add_payee_recursive{
-#         syscall_ptr : felt*, 
-#         pedersen_ptr : HashBuiltin*, 
-#         range_check_ptr
-#     }(
-#         lenght : felt,
-#         payees : felt*,
-#         shares : felt*
-#     ):
-#     if lenght == 0:
-#         return()
-#     end
+# 
 
-#     add_payee_recursive(lenght=lenght - 1 , payees=payees + 1, shares=shares + 1)
-
-#     add_payee(i=lenght - 1, address=[payees], shares=shares[])
-#     return()
-# end
