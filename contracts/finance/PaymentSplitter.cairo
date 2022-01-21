@@ -3,7 +3,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
-from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+from finance.token.ERC20_base import ERC20_transfer
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check,uint256_mul, uint256_unsigned_div_rem
 )
