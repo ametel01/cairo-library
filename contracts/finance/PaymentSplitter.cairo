@@ -207,6 +207,7 @@ end
 # @param id      The id of the account
 # @param account The address of the payee to add.
 # @param shares_ The number of shares owned by the payee.
+@external
 func _add_payee{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
