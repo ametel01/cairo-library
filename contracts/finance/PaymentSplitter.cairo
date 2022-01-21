@@ -148,7 +148,7 @@ func constructor{
     assert payees_len = shares_len
     assert_not_zero(payees_len)
 
-    add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
+   # add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
     return()
 end
 
@@ -192,6 +192,8 @@ func pending_payment{
         total_received : Uint256, 
         already_released : Uint256
     ) -> (res : Uint256):
+    alloc_locals
+    local syscall_ptr : felt* = syscall_ptr
     let (shares) = _shares.read(account)
     let (tot_shares) = _total_shares.read()
     let (dividend, _) = uint256_mul(total_received, shares)
@@ -211,35 +213,36 @@ func add_payee{
     }(
         i : felt, 
         address : felt, 
-        shares : felt
+        shares : Uint256
     ):
     assert_not_zero(address)
-    assert_not_zero(shares)
+    #assert_not_zero(shares)
     let (account_shares) = _shares.read(address)
-    assert account_shares = 0
+    assert account_shares = Uint256(0,0)
 
     _payees.write(i, address)
     _shares.write(address, shares)
     let (tot_shares) = _total_shares.read()
-    _total_shares.write(tot_shares + shares)
+    let (shares_to_write, _) = uint256_add(tot_shares, shares)
+    _total_shares.write(shares_to_write)
     return()
 end
 # @dev recursively add payees and shares when the contract is deployed
-func add_payee_recursive{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*, 
-        range_check_ptr
-    }(
-        lenght : felt,
-        payees : felt*,
-        shares : felt*
-    ):
-    if lenght == 0:
-        return()
-    end
+# func add_payee_recursive{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*, 
+#         range_check_ptr
+#     }(
+#         lenght : felt,
+#         payees : felt*,
+#         shares : felt*
+#     ):
+#     if lenght == 0:
+#         return()
+#     end
 
-    add_payee_recursive(lenght=lenght - 1 , payees=payees + 1, shares=shares + 1)
+#     add_payee_recursive(lenght=lenght - 1 , payees=payees + 1, shares=shares + 1)
 
-    add_payee(i=lenght - 1, address=[payees], shares=[shares])
-    return()
-end
+#     add_payee(i=lenght - 1, address=[payees], shares=shares[])
+#     return()
+# end
