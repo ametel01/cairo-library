@@ -170,7 +170,6 @@ end
 # @param id      The id of the account
 # @param account The address of the payee to add.
 # @param shares_ The number of shares owned by the payee.
-@external
 func _add_payee{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         i : felt, address : felt, shares : Uint256):
     assert_not_zero(address)
@@ -192,7 +191,7 @@ func add_payee_recursive{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range
         return ()
     end
 
-    add_payee_recursive(lenght=lenght - 1, payees=payees + 1, shares=shares + 1)
+    add_payee_recursive(lenght=lenght - 1, payees=payees + 1, shares=shares + 2)
 
     _add_payee(i=lenght - 1, address=[payees], shares=[shares])
     return ()

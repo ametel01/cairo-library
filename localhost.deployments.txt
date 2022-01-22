@@ -1,3 +1,11 @@
 0x05e9b6fded5643f272e0c9c7556b56f7ca4e04debfe8322cd9cd4a2e3dfd1df7:artifacts/abis/PaymentSplitter.json
 0x04c07f0f1f5e49dcdfec4e98376b10fff3e80e9c22229a1764f5d35205c43803:artifacts/abis/PaymentSplitter.json:paysplit
 0x04e8f328106f8174ec6ad63f36646e524fd2257b2a5557d7df4c2e1613d5ff78:artifacts/abis/PaymentSplitter.json:paysplit2
+
+
+Goerli.
+Contract address: 0x0719220d0dcf1e4473f04b6cbeafa4d084f749c1330b949e8b633917aebb4a5c
+2, payees[1 4], 2, 21 45 5 5
+
+Contract address: 0x07e57393bee0978d7acfee7ed8eeae95e15a60a15a7f6f08fc0a3b1b2dd21b9e
+-inputs 2 1234 6789 2 00  21 00 45
