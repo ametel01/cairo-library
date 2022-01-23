@@ -2,35 +2,33 @@
 %builtins pedersen range_check
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
-from starkware.cairo.common.math import assert_not_zero
-from finance.token.ERC20_base import ERC20_transfer
-# from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
-from starkware.cairo.common.uint256 import (
-    Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul,
-    uint256_unsigned_div_rem)
+from starkware.cairo.common.math import assert_not_zero, unsigned_div_rem
+#from finance.token.ERC20_base import ERC20_transfer
+from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+
 
 #
 # storage
 #
 @storage_var
-func _eth_balance() -> (balance : Uint256):
+func _eth_balance() -> (balance : felt):
 end
 
 @storage_var
-func _total_shares() -> (shares : Uint256):
+func _total_shares() -> (shares : felt):
 end
 
 @storage_var
-func _total_released() -> (released : Uint256):
+func _total_released() -> (released : felt):
 end
 
 @storage_var
-func _shares(address : felt) -> (shares : Uint256):
+func _shares(address : felt) -> (shares : felt):
 end
 
 # @dev amount of shares released to an address.
 @storage_var
-func _released(address : felt) -> (amount : Uint256):
+func _released(address : felt) -> (amount : felt):
 end
 
 @storage_var
@@ -40,11 +38,11 @@ end
 # @dev total amount of token released.
 # @param erc20: address of token contract.
 @storage_var
-func _erc20_total_released(erc20 : felt) -> (amount : Uint256):
+func _erc20_total_released(erc20 : felt) -> (amount : felt):
 end
 
 @storage_var
-func _erc20_realeased(ierc20 : felt, address : felt) -> (res : Uint256):
+func _erc20_realeased(ierc20 : felt, address : felt) -> (res : felt):
 end
 
 #
@@ -54,7 +52,7 @@ end
 # @dev Getter for the total shares held by payees.
 @view
 func tot_shares{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
-        tot_shares : Uint256):
+        tot_shares : felt):
     let (shares) = _total_shares.read()
     return (shares)
 end
@@ -62,7 +60,7 @@ end
 # @dev Getter for the total amount of Ether already released.
 @view
 func tot_released{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}() -> (
-        tot_released : Uint256):
+        tot_released : felt):
     let (released) = _total_released.read()
     return (released)
 end
@@ -71,7 +69,7 @@ end
 # should be the address of an IERC20 contract.
 @view
 func erc20_released{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        token : felt) -> (tot_released : Uint256):
+        token : felt) -> (tot_released : felt):
     let (token_released) = _erc20_total_released.read(token)
     return (token_released)
 end
@@ -79,7 +77,7 @@ end
 # @dev Getter for the amount of shares held by an account.
 @view
 func shares{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(account : felt) -> (
-        shares : Uint256):
+        shares : felt):
     let (shares) = _shares.read(account)
     return (shares)
 end
@@ -87,7 +85,7 @@ end
 # @dev Getter for the amount of Ether already released to a payee.
 @view
 func eth_released{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        account : felt) -> (released : Uint256):
+        account : felt) -> (released : felt):
     let (released) = _released.read(account)
     return (released)
 end
@@ -96,7 +94,7 @@ end
 # IERC20 contract.
 @view
 func released{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        token : felt, address : felt) -> (released : Uint256):
+        token : felt, address : felt) -> (released : felt):
     let (released) = _erc20_realeased.read(token, address)
     return (released)
 end
@@ -116,7 +114,7 @@ end
 # duplicates in `payees`.
 @constructor
 func constructor{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        payees_len : felt, payees : felt*, shares_len : felt, shares : Uint256*):
+        payees_len : felt, payees : felt*, shares_len : felt, shares : felt*):
     assert payees_len = shares_len
     assert_not_zero(payees_len)
     add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
@@ -135,13 +133,13 @@ func release_eth{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_p
     let (shares) = _shares.read(account)
     let (eth_balance) = _eth_balance.read()
     let (total_released) = _total_released.read()
-    let (total_received, _) = uint256_add(eth_balance, total_released)
+    let total_received = eth_balance + total_released
     let (released) = _released.read(account)
     let (payment) = pending_payment(account, total_received, released)
     # assert_not_zero(p_payment)
 
     _released.write(account, payment)
-    let (new_total_released, _) = uint256_add(total_released, payment)
+    let new_total_released = total_released + payment
     _total_released.write(new_total_released)
 
     ERC20_transfer(account, payment)
@@ -155,14 +153,14 @@ end
 # @dev internal logic for computing the pending payment of an `account` given
 # the token historical balances and already released amounts.
 func pending_payment{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        account : felt, total_received : Uint256, already_released : Uint256) -> (res : Uint256):
+        account : felt, total_received : felt, already_released : felt) -> (res : felt):
     alloc_locals
     local syscall_ptr : felt* = syscall_ptr
     let (shares) = _shares.read(account)
     let (tot_shares) = _total_shares.read()
-    let (dividend, _) = uint256_mul(total_received, shares)
-    let (divisor) = uint256_sub(tot_shares, already_released)
-    let (res, _) = uint256_unsigned_div_rem(dividend, divisor)
+    let dividend = total_received * shares
+    let divisor = tot_shares - already_released
+    let (res, _) = unsigned_div_rem(dividend, divisor)
     return (res)
 end
 
@@ -171,7 +169,7 @@ end
 # @param account The address of the payee to add.
 # @param shares_ The number of shares owned by the payee.
 func _add_payee{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        i : felt, address : felt, shares : Uint256):
+        i : felt, address : felt, shares : felt):
     assert_not_zero(address)
     # assert_not_zero(shares) # TODO
     let (account_shares) = _shares.read(address)
@@ -179,14 +177,14 @@ func _add_payee{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     _payees.write(i, address)
     _shares.write(address, shares)
     let (tot_shares) = _total_shares.read()
-    let (shares_to_write, _) = uint256_add(tot_shares, shares)
+    let shares_to_write = tot_shares + shares
     _total_shares.write(shares_to_write)
     return ()
 end
 # @dev recursively add payees and shares when the contract is deployed
 #
 func add_payee_recursive{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
-        lenght : felt, payees : felt*, shares : Uint256*):
+        lenght : felt, payees : felt*, shares : felt*):
     if lenght == 0:
         return ()
     end
