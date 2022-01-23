@@ -57,7 +57,7 @@ func tot_shares{
         range_check_ptr
         }() -> (tot_shares : felt):
     let (shares) = _total_shares.read()
-    return (shares)
+    return (tot_shares=shares)
 end
 
 # @dev Getter for the total amount of Ether already released.
@@ -68,7 +68,7 @@ func tot_released{
         range_check_ptr
         }() -> (tot_released : felt):
     let (released) = _total_released.read()
-    return (released)
+    return (tot_released=released)
 end
 
 # @dev Getter for the total amount of `token` already released. `token`
@@ -80,7 +80,7 @@ func erc20_released{
         range_check_ptr
         }(token : felt) -> (tot_released : felt):
     let (token_released) = _erc20_total_released.read(token)
-    return (token_released)
+    return (tot_released=token_released)
 end
 
 # @dev Getter for the amount of shares held by an account.
@@ -91,7 +91,7 @@ func shares{
         range_check_ptr
         }(account : felt) -> (shares : felt):
     let (shares) = _shares.read(account)
-    return (shares)
+    return (shares=shares)
 end
 
 # @dev Getter for the amount of Ether already released to a payee.
@@ -102,7 +102,7 @@ func eth_released{
         range_check_ptr
         }(account : felt) -> (released : felt):
     let (released) = _released.read(account)
-    return (released)
+    return (released=released)
 end
 
 # @dev Getter for the amount of `token` tokens already released to a payee. `token` should be the address of an
@@ -114,7 +114,7 @@ func released{
         range_check_ptr
         }(token : felt, address : felt) -> (released : felt):
     let (released) = _erc20_realeased.read(token, address)
-    return (released)
+    return (released=released)
 end
 
 # @dev Getter for the address of the payee number `index`.
@@ -125,7 +125,7 @@ func payee{
         range_check_ptr
         }(id : felt) -> (payee : felt):
     let (payee) = _payees.read(id)
-    return (payee)
+    return (payee=payee)
 end
 
 # @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned the number of shares at
@@ -192,7 +192,7 @@ func pending_payment{
     let dividend = total_received * shares
     let divisor = tot_shares - already_released
     let (res, _) = unsigned_div_rem(dividend, divisor)
-    return (res)
+    return (res=res)
 end
 
 # @dev Add a new payee to the contract.
