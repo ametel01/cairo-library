@@ -3,15 +3,16 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero, unsigned_div_rem
-from finance.token.ERC20_base import ERC20_transfer
-#from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+#from finance.token.ERC20_base import ERC20_transfer
+from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
 
 
 #
 # storage
 #
+
 @storage_var
-func _eth_balance() -> (balance : felt):
+func _erc20_balance() -> (balance : felt):
 end
 
 @storage_var
@@ -28,7 +29,7 @@ end
 
 # @dev amount of shares released to an address.
 @storage_var
-func _released(address : felt) -> (amount : felt):
+func _released_to_payee(address : felt) -> (amount : felt):
 end
 
 @storage_var
@@ -96,12 +97,12 @@ end
 
 # @dev Getter for the amount of Ether already released to a payee.
 @view
-func eth_released{
+func erc20_released_to_payee{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(account : felt) -> (released : felt):
-    let (released) = _released.read(account)
+    let (released) = _released_to_payee.read(account)
     return (released=released)
 end
 
@@ -152,21 +153,21 @@ end
 # @dev Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the
 # total shares and their previous withdrawals.
 @external
-func release_eth{
+func release_erc20{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(account : felt):
     alloc_locals
     let (shares) = _shares.read(account)
-    let (eth_balance) = _eth_balance.read()
+    let (erc20_balance) = _erc20_balance.read()
     let (total_released) = _total_released.read()
-    let total_received = eth_balance + total_released
-    let (released) = _released.read(account)
+    let total_received = erc20_balance + total_released
+    let (released) = _released_to_payee.read(account)
     let (payment) = pending_payment(account=account, total_received=total_received, already_released=released)
     # assert_not_zero(p_payment)
 
-    _released.write(account, payment)
+    _released_to_payee.write(account, payment)
     let new_total_released = total_released + payment
     _total_released.write(new_total_released)
 
