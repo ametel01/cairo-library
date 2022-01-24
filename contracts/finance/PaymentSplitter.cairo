@@ -3,8 +3,8 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero, unsigned_div_rem
-from finance.token.ERC20_base import ERC20_transfer
-#from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+#from finance.token.ERC20_base import ERC20_transfer
+from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
 
 
 #
@@ -163,14 +163,14 @@ func release_eth{
     let (total_released) = _total_released.read()
     let total_received = eth_balance + total_released
     let (released) = _released.read(account)
-    let (payment) = pending_payment(account, total_received, released)
+    let (payment) = pending_payment(account=account, total_received=total_received, already_released=released)
     # assert_not_zero(p_payment)
 
     _released.write(account, payment)
     let new_total_released = total_released + payment
     _total_released.write(new_total_released)
 
-    ERC20_transfer(account, payment)
+    ERC20_transfer(recipient=account, amount=payment)
     return ()
 end
 
