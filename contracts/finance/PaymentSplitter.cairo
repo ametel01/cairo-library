@@ -3,8 +3,8 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero, unsigned_div_rem
-#from finance.token.ERC20_base import ERC20_transfer
-from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+from finance.token.ERC20_base import ERC20_transfer
+#from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
 
 
 #
@@ -42,8 +42,9 @@ end
 func _erc20_total_released(erc20 : felt) -> (amount : felt):
 end
 
+# @dev total amount of token ierc20 released to an address
 @storage_var
-func _erc20_realeased(ierc20 : felt, address : felt) -> (res : felt):
+func _erc20_realeased(erc20 : felt, address : felt) -> (res : felt):
 end
 
 #
@@ -139,9 +140,11 @@ func constructor{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-        }(payees_len : felt, payees : felt*, shares_len : felt, shares : felt*):
+        }(token_deposited : felt, payees_len : felt, payees : felt*, shares_len : felt, shares : felt*):
     assert payees_len = shares_len
+    assert_not_zero(token_deposited)
     assert_not_zero(payees_len)
+    _erc20_balance.write(token_deposited)
     add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
     return ()
 end
