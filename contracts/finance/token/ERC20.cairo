@@ -94,8 +94,8 @@ func allowance{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(owner : felt, spender  : felt) -> (remaining : Uint256):
-    let (remaining : Uint256) = ERC20_allowance(owner, spender)
+    }(owner : felt, spender  : felt) -> (remaining : felt):
+    let (remaining : felt) = ERC20_allowance(owner, spender)
     return (remaining)
 end
 

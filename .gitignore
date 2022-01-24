@@ -131,4 +131,4 @@ venv.bak/
 dmypy.json
 
 # Pyre type checker
-.pyre/
+.pyre/localhost.deployments.txt
