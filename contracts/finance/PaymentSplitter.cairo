@@ -226,7 +226,7 @@ func add_payee_recursive{
         return ()
     end
 
-    add_payee_recursive(lenght=lenght - 1, payees=payees + 1, shares=shares + 2)
+    add_payee_recursive(lenght=lenght - 1, payees=payees + 1, shares=shares + 1)
 
     _add_payee(i=lenght - 1, address=[payees], shares=[shares])
     return ()
