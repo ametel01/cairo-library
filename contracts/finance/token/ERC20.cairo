@@ -1,10 +1,9 @@
 %lang starknet
-%builtins pedersen range_check
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
+from starkware.cairo.common.uint256 import Uint256
 
-
-from finance.token.ERC20_base import (
+from contracts.token.ERC20_base import (
     ERC20_name,
     ERC20_symbol,
     ERC20_totalSupply,
@@ -28,7 +27,7 @@ func constructor{
     }(
         name : felt,
         symbol : felt,
-        initial_supply : felt,
+        initial_supply : Uint256,
         recipient : felt
     ):
     ERC20_initializer(name, symbol, initial_supply, recipient)
@@ -64,8 +63,8 @@ func totalSupply{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }() -> (totalSupply : felt):
-    let (totalSupply : felt) = ERC20_totalSupply()
+    }() -> (totalSupply : Uint256):
+    let (totalSupply : Uint256) = ERC20_totalSupply()
     return (totalSupply)
 end
 
@@ -84,8 +83,8 @@ func balanceOf{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(account : felt) -> (balance :  felt):
-    let (balance : felt) = ERC20_balanceOf(account)
+    }(account : felt) -> (balance : Uint256):
+    let (balance : Uint256) = ERC20_balanceOf(account)
     return (balance)
 end
 
@@ -94,8 +93,8 @@ func allowance{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(owner : felt, spender  : felt) -> (remaining : felt):
-    let (remaining : felt) = ERC20_allowance(owner, spender)
+    }(owner : felt, spender : felt) -> (remaining : Uint256):
+    let (remaining : Uint256) = ERC20_allowance(owner, spender)
     return (remaining)
 end
 
@@ -108,7 +107,7 @@ func transfer{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(recipient : felt, amount : felt) -> (success : felt):
+    }(recipient : felt, amount : Uint256) -> (success : felt):
     ERC20_transfer(recipient, amount)
     # Cairo equivalent to 'return (true)'
     return (1)
@@ -122,7 +121,7 @@ func transferFrom{
     }(
         sender : felt, 
         recipient : felt, 
-        amount : felt
+        amount : Uint256
     ) -> (success : felt):
     ERC20_transferFrom(sender, recipient, amount)
     # Cairo equivalent to 'return (true)'
@@ -134,7 +133,7 @@ func approve{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(spender : felt, amount : felt) -> (success : felt):
+    }(spender : felt, amount : Uint256) -> (success : felt):
     ERC20_approve(spender, amount)
     # Cairo equivalent to 'return (true)'
     return (1)
@@ -145,7 +144,7 @@ func increaseAllowance{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(spender : felt, added_value : felt) -> (success : felt):
+    }(spender : felt, added_value : Uint256) -> (success : felt):
     ERC20_increaseAllowance(spender, added_value)
     # Cairo equivalent to 'return (true)'
     return (1)
@@ -156,8 +155,8 @@ func decreaseAllowance{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(spender : felt, subtracted_value : felt) -> (success : felt):
+    }(spender : felt, subtracted_value : Uint256) -> (success : felt):
     ERC20_decreaseAllowance(spender, subtracted_value)
     # Cairo equivalent to 'return (true)'
     return (1)
-end
+end 

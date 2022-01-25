@@ -3,8 +3,12 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero, unsigned_div_rem
-from finance.token.ERC20_base import ERC20_transfer
-#from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+#from finance.token.ERC20_base import ERC20_transfer
+from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+from starkware.cairo.common.uint256 import (
+    Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check
+)
+
 
 
 #
@@ -12,7 +16,7 @@ from finance.token.ERC20_base import ERC20_transfer
 #
 
 @storage_var
-func _erc20_balance() -> (balance : felt):
+func _erc20_balance() -> (balance : Uint256):
 end
 
 @storage_var
@@ -188,7 +192,7 @@ func pending_payment{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-        }(account : felt, total_received : felt, already_released : felt) -> (res : felt):
+        }(account : felt, total_received : felt, already_released : felt) -> (res : Uint256):
     alloc_locals
     local syscall_ptr : felt* = syscall_ptr
     let (shares) = _shares.read(account)
