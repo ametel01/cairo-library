@@ -127,7 +127,7 @@ func ERC20_transferFrom{
     }(
         sender : felt, 
         recipient : felt, 
-        amoun t: Uint256
+        amount : Uint256
     ) -> ():
     alloc_locals
     let (local caller) = get_caller_address()
