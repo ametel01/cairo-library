@@ -109,41 +109,23 @@ func add_payee_recursive{
     return ()
 end
 
-func token_transfer{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(recipient : felt, amount : Uint256):
-    let (sender) = get_caller_address()
-    _transfer(sender, recipient, amount)
-    return ()
-end
+# func token_transfer{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(recipient : felt, amount : Uint256):
+#     _transfer(recipient, amount)
+#     return ()
+# end
 
 func _transfer{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
-    }(sender : felt, recipient : felt, amount : Uint256):
-    alloc_locals
-    assert_not_zero(sender)
-    assert_not_zero(recipient)
-    uint256_check(amount) # almost surely not needed, might remove after confirmation
-
-    let (sender_balance) = _payees_balances.read(address=sender)
-
-    # validates amount <= sender_balance and returns 1 if true
-    let (enough_balance) = uint256_le(amount, sender_balance)
-    assert_not_zero(enough_balance)
-
-    # subtract from sender
-    let (new_sender_balance : Uint256) = uint256_sub(sender_balance, amount)
-    _payees_balances.write(sender, new_sender_balance)
-
-    # add to recipient
-    let (recipient_balance) = _payees_balances.read(address=recipient)
-    # overflow is not possible because sum is guaranteed by mint to be less than total supply
-    let (new_recipient_balance, _: Uint256) = uint256_add(recipient_balance, amount)
-    _payees_balances.write(recipient, new_recipient_balance)
+    }(recipient : felt, amount : Uint256):
+    let (curr_balance : Uint256) = _payees_balances.read(recipient)
+    let new_balance = uint256_add(curr_balance, amount)
+    _payees_balances.write(recipient, amount)
     return ()
 end
 

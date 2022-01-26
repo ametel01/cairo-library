@@ -21,7 +21,7 @@ from finance.PaymentSplitter_base import (
     pending_payment,
     add_payee,
     add_payee_recursive,
-    token_transfer
+    _transfer
 )
 
 #
@@ -52,7 +52,7 @@ end
 #
 # view functions
 #
-
+@view
 func balance_of{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
@@ -61,7 +61,6 @@ func balance_of{
     let (res) = _payees_balances.read(address)
     return(res)
 end
-
 
 # @dev Getter for the total shares held by payees.
 @view
@@ -108,28 +107,7 @@ func shares{
     return (shares=shares)
 end
 
-# @dev Getter for the amount of Ether already released to a payee.
-@view
-func erc20_released_to_payee{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*, 
-        range_check_ptr
-        }(account : felt) -> (released : Uint256):
-    let (released) = _released_to_payee.read(account)
-    return (released=released)
-end
 
-# @dev Getter for the amount of `token` tokens already released to a payee. `token` should be the address of an
-# IERC20 contract.
-@view
-func released{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*, 
-        range_check_ptr
-        }(token : felt, address : felt) -> (released : Uint256):
-    let (released) = _erc20_realeased.read(token, address)
-    return (released=released)
-end
 
 # @dev Getter for the address of the payee number `index`.
 @view
@@ -167,7 +145,7 @@ func release_erc20{
     let (new_total_released, _) = uint256_add(total_released, payment)
     _total_released.write(new_total_released)
 
-    token_transfer(recipient=account, amount=payment)
+    _transfer(recipient=account, amount=payment)
     return ()
 end
 
