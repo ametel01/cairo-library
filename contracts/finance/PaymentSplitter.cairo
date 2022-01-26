@@ -5,6 +5,9 @@ from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
 from finance.token.ERC20_base import ERC20_transfer
 #from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+from starkware.cairo.common.uint256 import (
+    Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul, uint256_signed_div_rem
+)
 from finance.PaymentSplitter_base import (
     _erc20_balance,
     _total_shares,
@@ -19,9 +22,31 @@ from finance.PaymentSplitter_base import (
     add_payee,
     add_payee_recursive
 )
-from starkware.cairo.common.uint256 import (
-    Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul, uint256_signed_div_rem
-)
+
+#
+# Contstructor
+#
+
+# @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned the number of shares at
+# the matching position in the `shares` array.
+#
+# All addresses in `payees` must be non-zero. Both arrays must have the same non-zero length, and there must be no
+# duplicates in `payees`.
+@constructor
+func constructor{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+        }(token_deposited : Uint256, payees_len : felt, payees : felt*, shares_len : felt, shares : Uint256*):
+    assert payees_len = shares_len
+    let (not_zero) = uint256_lt(Uint256(0, 0), token_deposited)
+    assert_not_zero(not_zero)
+    assert_not_zero(payees_len)
+    _erc20_balance.write(token_deposited)
+    add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
+    return ()
+end
+
 
 #
 # view functions
@@ -104,26 +129,6 @@ func payee{
         }(id : felt) -> (payee : felt):
     let (payee) = _payees.read(id)
     return (payee=payee)
-end
-
-# @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned the number of shares at
-# the matching position in the `shares` array.
-#
-# All addresses in `payees` must be non-zero. Both arrays must have the same non-zero length, and there must be no
-# duplicates in `payees`.
-@constructor
-func constructor{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*, 
-        range_check_ptr
-        }(token_deposited : Uint256, payees_len : felt, payees : felt*, shares_len : felt, shares : Uint256*):
-    assert payees_len = shares_len
-    let (not_zero) = uint256_lt(Uint256(0, 0), token_deposited)
-    assert_not_zero(not_zero)
-    assert_not_zero(payees_len)
-    _erc20_balance.write(token_deposited)
-    add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
-    return ()
 end
 
 # # add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
