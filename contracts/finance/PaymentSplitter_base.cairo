@@ -109,7 +109,7 @@ func add_payee_recursive{
     return ()
 end
 
-func ERC20_transfer{
+func token_transfer{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
         range_check_ptr

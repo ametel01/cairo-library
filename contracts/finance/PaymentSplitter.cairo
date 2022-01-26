@@ -8,7 +8,7 @@ from starkware.cairo.common.math import assert_not_zero
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul, uint256_signed_div_rem
 )
-from Cairo.cairo_library.contracts.finance.PaymentSplitter_base import (
+from finance.PaymentSplitter_base import (
     _token_balance,
     _total_shares,
     _total_released,
@@ -17,10 +17,11 @@ from Cairo.cairo_library.contracts.finance.PaymentSplitter_base import (
     _payees,
     _erc20_total_released,
     _erc20_realeased,
-
+    _payees_balances,
     pending_payment,
     add_payee,
-    add_payee_recursive
+    add_payee_recursive,
+    token_transfer
 )
 
 #
@@ -42,7 +43,7 @@ func constructor{
     let (not_zero) = uint256_lt(Uint256(0, 0), token_deposited)
     assert_not_zero(not_zero)
     assert_not_zero(payees_len)
-    _erc20_balance.write(token_deposited)
+    _token_balance.write(token_deposited)
     add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
     return ()
 end
@@ -155,7 +156,7 @@ func release_erc20{
         }(account : felt):
     alloc_locals
     let (shares) = _shares.read(account)
-    let (erc20_balance) = _erc20_balance.read()
+    let (erc20_balance) = _token_balance.read()
     let (total_released) = _total_released.read()
     let (total_received, _) = uint256_add(erc20_balance, total_released)
     let (released) = _released_to_payee.read(account)
@@ -166,7 +167,7 @@ func release_erc20{
     let (new_total_released, _) = uint256_add(total_released, payment)
     _total_released.write(new_total_released)
 
-    ERC20_transfer(recipient=account, amount=payment)
+    token_transfer(recipient=account, amount=payment)
     return ()
 end
 
