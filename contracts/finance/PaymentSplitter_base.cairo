@@ -2,8 +2,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
-from finance.token.ERC20_base import ERC20_transfer
-#from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+from starkware.starknet.common.syscalls import get_caller_address
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul, uint256_signed_div_rem
 )
@@ -13,7 +12,7 @@ from starkware.cairo.common.uint256 import (
 #
 
 @storage_var
-func _erc20_balance() -> (balance : Uint256):
+func ERC0_balance() -> (balance : Uint256):
 end
 
 @storage_var
@@ -105,3 +104,43 @@ func add_payee_recursive{
     add_payee(i=lenght - 1, address=[payees], shares=[shares])
     return ()
 end
+
+func ERC20_transfer{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*,
+        range_check_ptr
+    }(recipient : felt, amount : Uint256):
+    let (sender) = get_caller_address()
+    _transfer(sender, recipient, amount)
+    return ()
+end
+
+func _transfer{
+        syscall_ptr : felt*, 
+        pedersen_ptr : HashBuiltin*,
+        range_check_ptr
+    }(sender : felt, recipient : felt, amount : Uint256):
+    alloc_locals
+    assert_not_zero(sender)
+    assert_not_zero(recipient)
+    uint256_check(amount) # almost surely not needed, might remove after confirmation
+
+    let (local sender_balance : Uint256) = ERC20_balances.read(account=sender)
+
+    # validates amount <= sender_balance and returns 1 if true
+    let (enough_balance) = uint256_le(amount, sender_balance)
+    assert_not_zero(enough_balance)
+
+    # subtract from sender
+    let (new_sender_balance : Uint256) = uint256_sub(sender_balance, amount)
+    ERC20_balances.write(sender, new_sender_balance)
+
+    # add to recipient
+    let (recipient_balance : Uint256) = ERC20_balances.read(account=recipient)
+    # overflow is not possible because sum is guaranteed by mint to be less than total supply
+    let (new_recipient_balance, _: Uint256) = uint256_add(recipient_balance, amount)
+    ERC20_balances.write(recipient, new_recipient_balance)
+    return ()
+end
+
+
