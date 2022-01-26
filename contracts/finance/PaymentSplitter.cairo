@@ -1,5 +1,4 @@
 %lang starknet
-%builtins pedersen range_check
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
@@ -84,18 +83,6 @@ func tot_released{
     return (tot_released=released)
 end
 
-# @dev Getter for the total amount of `token` already released. `token`
-# should be the address of an IERC20 contract.
-@view
-func erc20_released{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*, 
-        range_check_ptr
-        }(token : felt) -> (tot_released : Uint256):
-    let (token_released) = _erc20_total_released.read(token)
-    return (tot_released=token_released)
-end
-
 # @dev Getter for the amount of shares held by an account.
 @view
 func shares{
@@ -106,8 +93,6 @@ func shares{
     let (shares) = _shares.read(account)
     return (shares=shares)
 end
-
-
 
 # @dev Getter for the address of the payee number `index`.
 @view

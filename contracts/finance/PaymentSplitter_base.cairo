@@ -109,15 +109,6 @@ func add_payee_recursive{
     return ()
 end
 
-# func token_transfer{
-#         syscall_ptr : felt*, 
-#         pedersen_ptr : HashBuiltin*,
-#         range_check_ptr
-#     }(recipient : felt, amount : Uint256):
-#     _transfer(recipient, amount)
-#     return ()
-# end
-
 func _transfer{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
