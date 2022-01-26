@@ -12,7 +12,11 @@ from starkware.cairo.common.uint256 import (
 #
 
 @storage_var
-func ERC0_balance() -> (balance : Uint256):
+func _token_balance() -> (balance : Uint256):
+end
+
+@storage_var
+func _payees_balances(address : felt) -> (balance : Uint256):
 end
 
 @storage_var
@@ -125,7 +129,7 @@ func _transfer{
     assert_not_zero(recipient)
     uint256_check(amount) # almost surely not needed, might remove after confirmation
 
-    let (local sender_balance : Uint256) = ERC20_balances.read(account=sender)
+    let (sender_balance) = _payees_balances.read(address=sender)
 
     # validates amount <= sender_balance and returns 1 if true
     let (enough_balance) = uint256_le(amount, sender_balance)
@@ -133,13 +137,13 @@ func _transfer{
 
     # subtract from sender
     let (new_sender_balance : Uint256) = uint256_sub(sender_balance, amount)
-    ERC20_balances.write(sender, new_sender_balance)
+    _payees_balances.write(sender, new_sender_balance)
 
     # add to recipient
-    let (recipient_balance : Uint256) = ERC20_balances.read(account=recipient)
+    let (recipient_balance) = _payees_balances.read(address=recipient)
     # overflow is not possible because sum is guaranteed by mint to be less than total supply
     let (new_recipient_balance, _: Uint256) = uint256_add(recipient_balance, amount)
-    ERC20_balances.write(recipient, new_recipient_balance)
+    _payees_balances.write(recipient, new_recipient_balance)
     return ()
 end
 

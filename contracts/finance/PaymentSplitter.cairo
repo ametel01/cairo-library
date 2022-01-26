@@ -3,13 +3,13 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
-from finance.token.ERC20_base import ERC20_transfer
+#from finance.token.ERC20_base import ERC20_transfer
 #from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul, uint256_signed_div_rem
 )
-from finance.PaymentSplitter_base import (
-    _erc20_balance,
+from Cairo.cairo_library.contracts.finance.PaymentSplitter_base import (
+    _token_balance,
     _total_shares,
     _total_released,
     _shares,
@@ -51,6 +51,16 @@ end
 #
 # view functions
 #
+
+func balance_of{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+    }(address : felt) -> (balance : Uint256):
+    let (res) = _payees_balances.read(address)
+    return(res)
+end
+
 
 # @dev Getter for the total shares held by payees.
 @view
