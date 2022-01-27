@@ -7,13 +7,20 @@ from starkware.cairo.common.uint256 import (
 
 
 @storage_var
+func _balance() -> (balance : Uint256):
+end
+
+@storage_var
 func _beneficiary() -> (address : felt):
 end
 
+# Start block of the vesting
 @storage_var
 func _start() -> (block : felt):
 end
 
+# Duration in number of blocks of the vesting
 @storage_var
 func _duration() -> (n_blocks : felt):
 end
+
