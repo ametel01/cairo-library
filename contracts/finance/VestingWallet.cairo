@@ -24,3 +24,32 @@ end
 func _duration() -> (n_blocks : felt):
 end
 
+@external
+func beneficiary{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+        }() -> (res : felt):
+    let (res) = _beneficiary.read()
+    return(res=res)
+end
+
+@external
+func start_block{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+        }() -> (res : felt):
+    let (res) = _start.read()
+    return(res=res)
+end
+
+@external
+func daration{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+        }() -> (res : felt):
+    let (res) = _duration.read()
+    return(res=res)
+end
