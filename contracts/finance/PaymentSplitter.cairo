@@ -7,7 +7,7 @@ from starkware.cairo.common.math import assert_not_zero
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul,
     uint256_signed_div_rem)
-from finance.PaymentSplitter_base import (
+from contracts.finance.PaymentSplitter_base import (
     _token_balance, _total_shares, _total_released, _shares, _released_to_payee, _payees,
     _erc20_total_released, _erc20_realeased, _payees_balances, pending_payment, add_payee,
     add_payee_recursive, _transfer)
