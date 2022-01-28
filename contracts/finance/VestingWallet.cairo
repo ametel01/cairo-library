@@ -14,6 +14,10 @@ func _balance() -> (balance : Uint256):
 end
 
 @storage_var
+func _token_released() -> (released : Uint256):
+end
+
+@storage_var
 func _beneficiary() -> (address : felt):
 end
 
@@ -36,7 +40,7 @@ func constructor{
         beneficiary_address :felt, 
         durantion_in_seconds : felt):
     assert_not_zero(beneficiary_address)
-    assert_not_zero(daration)
+    assert_not_zero(duration)
     _beneficiary.write(beneficiary_address)
     _duration.write(durantion_in_seconds)
     return()
@@ -63,11 +67,21 @@ func start_block{
 end
 
 @external
-func daration{
+func duration{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }() -> (res : felt):
     let (res) = _duration.read()
+    return(res=res)
+end
+
+@external
+func released{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+        }() -> (res : Uint256):
+    let (res) = _token_released.read()
     return(res=res)
 end

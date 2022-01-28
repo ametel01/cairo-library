@@ -3,7 +3,7 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.uint256 import Uint256
 
-from finance.token.ERC20_base import (
+from contracts.finance.token.ERC20_base import (
     ERC20_name,
     ERC20_symbol,
     ERC20_totalSupply,
