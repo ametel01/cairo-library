@@ -12,7 +12,7 @@ from starkware.cairo.common.uint256 import (
 #
 
 @storage_var
-func _token_balance() -> (balance : Uint256):
+func _token_address() -> (address : felt):
 end
 
 @storage_var

@@ -2,13 +2,13 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
-# from finance.token.ERC20_base import ERC20_transfer
+from contracts.finance.token import ERC20
 # from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul,
     uint256_signed_div_rem)
 from contracts.finance.PaymentSplitter_base import (
-    _token_balance, _total_shares, _total_released, _shares, _released_to_payee, _payees,
+    _token_address, _total_shares, _total_released, _shares, _released_to_payee, _payees,
     _erc20_total_released, _erc20_realeased, _payees_balances, pending_payment, add_payee,
     add_payee_recursive, _transfer)
 
@@ -27,16 +27,14 @@ func constructor{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(
-        token_deposited : Uint256, 
+        token_address : felt, 
         payees_len : felt, 
         payees : felt*, 
         shares_len : felt,
         shares : Uint256*):
     assert payees_len = shares_len
-    let (not_zero) = uint256_lt(Uint256(0, 0), token_deposited)
-    assert_not_zero(not_zero)
+    assert_not_zero(token_address)
     assert_not_zero(payees_len)
-    _token_balance.write(token_deposited)
     add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
     return ()
 end
@@ -110,9 +108,10 @@ func release_erc20{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(account : felt):
-    alloc_locals
     let (shares) = _shares.read(account)
-    let (erc20_balance) = _token_balance.read()
+    assert_not_zero(shares)
+    let (erc20_address) = _token_address.read()
+    assert_not_zero(erc20_address)
     let (total_released) = _total_released.read()
     let (total_received, _) = uint256_add(erc20_balance, total_released)
     let (released) = _released_to_payee.read(account)

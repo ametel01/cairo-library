@@ -1,0 +1,3 @@
+0x00de3c666350e31dcb06d95ec282c4652fff4a51324b671ba0e50cc50e5fdca1:artifacts/abis/ERC20.json
+0x019fb357e10a28c0d8e952181520a66ac07159af79e36dd0f8893778ffb46aee:artifacts/abis/ERC20.json:token
+0x0221d041147f1454e0569801a5f46a7f4b87f64d38b177afdbe2edc992041fb9:artifacts/abis/ERC20.json:token2
