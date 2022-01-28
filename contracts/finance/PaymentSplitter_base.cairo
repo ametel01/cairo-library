@@ -109,15 +109,6 @@ func add_payee_recursive{
     return ()
 end
 
-func _transfer{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(recipient : felt, amount : Uint256):
-    let (curr_balance : Uint256) = _payees_balances.read(recipient)
-    let new_balance = uint256_add(curr_balance, amount)
-    _payees_balances.write(recipient, amount)
-    return ()
-end
+
 
 
