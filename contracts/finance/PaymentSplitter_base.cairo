@@ -6,6 +6,7 @@ from starkware.starknet.common.syscalls import get_caller_address
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul, uint256_signed_div_rem
 )
+from contracts.finance.token.ERC20 import totalSupply
 
 #
 # storage
@@ -40,16 +41,16 @@ end
 func _payees(i : felt) -> (payee : felt):
 end
 
-# @dev total amount of token released.
-# @param erc20: address of token contract.
-@storage_var
-func _erc20_total_released(erc20 : felt) -> (amount : Uint256):
-end
+# # @dev total amount of token released.
+# # @param erc20: address of token contract.
+# @storage_var
+# func _erc20_total_released(erc20 : felt) -> (amount : Uint256):
+# end
 
-# @dev total amount of token ierc20 released to an address
-@storage_var
-func _erc20_realeased(erc20 : felt, address : felt) -> (res : Uint256):
-end
+# # @dev total amount of token ierc20 released to an address
+# @storage_var
+# func _erc20_realeased(erc20 : felt, address : felt) -> (res : Uint256):
+# end
 
 #
 # Internal functions
@@ -63,12 +64,12 @@ func pending_payment{
         range_check_ptr
         }(account : felt, total_received : Uint256, already_released : Uint256) -> (res : Uint256):
     alloc_locals
-    local syscall_ptr : felt* = syscall_ptr
-    let (shares) = _shares.read(account)
+    local syscalls
+    let (account_shares) = _shares.read(account)
     let (tot_shares) = _total_shares.read()
-    let (dividend, _) = uint256_mul(total_received, shares)
-    let (divisor) = uint256_sub(tot_shares, already_released)
-    let (res, _) = uint256_signed_div_rem(dividend, divisor)
+    let tot_supply = totalSupply
+    let (dividend, _) = uint256_mul(tot_supply, account_shares)
+    let (res, _) = uint256_signed_div_rem(dividend, tot_shares)
     return (res=res)
 end
 

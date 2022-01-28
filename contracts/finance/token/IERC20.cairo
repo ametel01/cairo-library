@@ -1,5 +1,7 @@
 %lang starknet
 
+from starkware.cairo.common.uint256 import Uint256
+
 @contract_interface
 namespace IERC20:
     func name() -> (name : felt):
@@ -11,13 +13,13 @@ namespace IERC20:
     func decimals() -> (decimals : felt):
     end
 
-    func totalSupply() -> (totalSupply : felt):
+    func totalSupply() -> (totalSupply : Uint256):
     end
 
-    func balanceOf(account : felt) -> (balance : felt):
+    func balanceOf(account : felt) -> (balance : Uint256):
     end
 
-    func allowance(owner : felt, spender : felt) -> (remaining : felt):
+    func allowance(owner : felt, spender : felt) -> (remaining : Uint256):
     end
 
     func transfer(recipient : felt, amount : felt) -> (success : felt):

@@ -10,7 +10,7 @@ from starkware.cairo.common.uint256 import (
 from contracts.finance.PaymentSplitter_base import (
     _token_address, _total_shares, _total_released, _shares, _released_to_payee, _payees,
     _erc20_total_released, _erc20_realeased, _payees_balances, pending_payment, add_payee,
-    add_payee_recursive, _transfer)
+    add_payee_recursive)
 
 #
 # Contstructor
@@ -108,21 +108,18 @@ func release_erc20{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(account : felt):
-    let (shares) = _shares.read(account)
-    assert_not_zero(shares)
-    let (erc20_address) = _token_address.read()
-    assert_not_zero(erc20_address)
-    let (total_released) = _total_released.read()
-    let (total_received, _) = uint256_add(erc20_balance, total_released)
-    let (released) = _released_to_payee.read(account)
-    let (payment) = pending_payment(
-        account=account, total_received=total_received, already_released=released)
-    # assert_not_zero(p_payment)
+    alloc_locals
+    local syscalls 
+    assert_not_zero(account)
+    let (account_shares) = _shares.read(account)
+    let (shares_check) = uint256_lt(Uint256(0,0), account_shares)
+    assert_not_zero(shares_check)
+    let (total_received : Uint256) = _released_to_payee.read(account)
+    let (already_released : Uint256) = _total_released.read()
+    let (amount_to_release : Uint256) = pending_paymen(
+                                                account=account,
+                                                total_received
 
-    _released_to_payee.write(account, payment)
-    let (new_total_released, _) = uint256_add(total_released, payment)
-    _total_released.write(new_total_released)
 
-    _transfer(recipient=account, amount=payment)
     return ()
 end
