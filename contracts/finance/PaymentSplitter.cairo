@@ -9,7 +9,7 @@ from starkware.cairo.common.uint256 import (
     uint256_signed_div_rem)
 from contracts.finance.PaymentSplitter_base import (
     _token_address, _total_shares, _total_released, _shares, _released_to_payee, _payees,
-    _erc20_total_released, _erc20_realeased, _payees_balances, pending_payment, add_payee,
+     _payees_balances, pending_payment, add_payee,
     add_payee_recursive)
 
 #
@@ -116,10 +116,8 @@ func release_erc20{
     assert_not_zero(shares_check)
     let (total_received : Uint256) = _released_to_payee.read(account)
     let (already_released : Uint256) = _total_released.read()
-    let (amount_to_release : Uint256) = pending_paymen(
-                                                account=account,
-                                                total_received
-
-
+    let (amount_to_release : Uint256) = pending_payment(account,total_received,already_released)
+    let (token_address) = _token_address.read()
+    IERC20.transfer(token_address,account,amount_to_release)
     return()
 end

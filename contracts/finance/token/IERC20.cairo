@@ -22,7 +22,7 @@ namespace IERC20:
     func allowance(owner : felt, spender : felt) -> (remaining : Uint256):
     end
 
-    func transfer(recipient : felt, amount : felt) -> (success : felt):
+    func transfer(recipient : felt, amount : Uint256) -> (success : felt):
     end
 
     func transferFrom(
