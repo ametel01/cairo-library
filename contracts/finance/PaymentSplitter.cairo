@@ -121,5 +121,5 @@ func release_erc20{
                                                 total_received
 
 
-    return ()
+    return()
 end

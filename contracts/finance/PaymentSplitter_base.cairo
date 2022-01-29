@@ -6,7 +6,7 @@ from starkware.starknet.common.syscalls import get_caller_address
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul, uint256_signed_div_rem
 )
-from contracts.finance.token.ERC20 import totalSupply
+from contracts.finance.token.IERC20 import IERC20
 
 #
 # storage
@@ -67,7 +67,8 @@ func pending_payment{
     local syscalls
     let (account_shares) = _shares.read(account)
     let (tot_shares) = _total_shares.read()
-    let tot_supply = totalSupply
+    let (token_address) = _token_address.read()
+    let (tot_supply) = IERC20.totalSupply(token_address)
     let (dividend, _) = uint256_mul(tot_supply, account_shares)
     let (res, _) = uint256_signed_div_rem(dividend, tot_shares)
     return (res=res)
