@@ -2,7 +2,7 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
-from contracts.finance.token.IERC20 import IERC20
+from contracts.finance.token.ERC20_base import ERC20_mint 
 # from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul,
@@ -118,6 +118,6 @@ func release_erc20{
     let (already_released : Uint256) = _total_released.read()
     let (amount_to_release : Uint256) = pending_payment(account,total_received,already_released)
     let (token_address) = _token_address.read()
-    IERC20.transfer(token_address,account,amount_to_release)
+    ERC20_mint(recipient=account, amount=amount_to_release)
     return()
 end
