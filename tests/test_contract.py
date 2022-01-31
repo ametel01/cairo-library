@@ -5,7 +5,7 @@ import pytest
 from starkware.starknet.testing.starknet import Starknet
 
 # The path to the contract source code.
-CONTRACT_FILE = os.path.join("contracts", "contract.cairo")
+CONTRACT_FILE = os.path.join("contracts", "ERC20.cairo")
 
 
 # The testing library uses python's asyncio. So the following

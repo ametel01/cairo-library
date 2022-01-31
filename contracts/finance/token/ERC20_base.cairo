@@ -130,18 +130,18 @@ func ERC20_transferFrom{
         amount : Uint256
     ) -> ():
     alloc_locals
-    let (local caller) = get_caller_address()
-    let (local caller_allowance : Uint256) = ERC20_allowances.read(owner=sender, spender=caller)
+    # let (local caller) = get_caller_address()
+    # let (local caller_allowance : Uint256) = ERC20_allowances.read(owner=sender, spender=caller)
 
     # validates amount <= caller_allowance and returns 1 if true   
-    let (enough_allowance) = uint256_le(amount, caller_allowance)
-    assert_not_zero(enough_allowance)
+    # let (enough_allowance) = uint256_le(amount, caller_allowance)
+    # assert_not_zero(enough_allowance)
 
     _transfer(sender, recipient, amount)
 
     # subtract allowance
-    let (new_allowance : Uint256) = uint256_sub(caller_allowance, amount)
-    ERC20_allowances.write(sender, caller, new_allowance)
+    # let (new_allowance : Uint256) = uint256_sub(caller_allowance, amount)
+    # ERC20_allowances.write(sender, caller, new_allowance)
     return ()
 end
 
