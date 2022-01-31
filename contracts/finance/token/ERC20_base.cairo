@@ -31,6 +31,10 @@ end
 func ERC20_balances(account : felt) -> (balance : Uint256):
 end
 
+@storage_var
+func ERC20_owner() -> (account : felt):
+end
+
 #
 # Constructor
 #
@@ -49,6 +53,7 @@ func ERC20_initializer{
     ERC20_symbol_.write(symbol)
     ERC20_decimals_.write(18)
     ERC20_mint(recipient, initial_supply)
+    ERC20_owner.write(recipient)
     return ()
 end
 
