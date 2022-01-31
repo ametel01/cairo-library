@@ -118,6 +118,6 @@ func release_erc20{
     let (already_released : Uint256) = _total_released.read()
     let (amount_to_release : Uint256) = pending_payment(account,total_received,already_released)
     let (token_address) = _token_address.read()
-    ERC20_mint(recipient=account, amount=amount_to_release)
+    IERC20.transfer(contract_address=token_address, recipient=account, amount=amount_to_release)
     return()
 end

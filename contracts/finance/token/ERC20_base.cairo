@@ -107,7 +107,7 @@ func ERC20_transfer{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }(recipient : felt, amount : Uint256):
-    let (sender) = get_caller_address()
+    let (sender) = ERC20_owner.read()
     _transfer(sender, recipient, amount)
     return ()
 end
