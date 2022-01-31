@@ -31,9 +31,9 @@ end
 func ERC20_balances(account : felt) -> (balance : Uint256):
 end
 
-@storage_var
-func ERC20_allowances(owner : felt, spender : felt) -> (allowance : Uint256):
-end
+# @storage_var
+# func ERC20_allowances(owner : felt, spender : felt) -> (allowance : Uint256):
+# end
 
 #
 # Constructor
@@ -101,14 +101,14 @@ func ERC20_balanceOf{
     return (balance)
 end
 
-func ERC20_allowance{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(owner : felt, spender : felt) -> (remaining : Uint256):
-    let (remaining : Uint256) = ERC20_allowances.read(owner, spender)
-    return (remaining)
-end
+# func ERC20_allowance{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(owner : felt, spender : felt) -> (remaining : Uint256):
+#     let (remaining : Uint256) = ERC20_allowances.read(owner, spender)
+#     return (remaining)
+# end
 
 func ERC20_transfer{
         syscall_ptr : felt*, 
@@ -145,55 +145,55 @@ func ERC20_transferFrom{
     return ()
 end
 
-func ERC20_approve{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(spender : felt, amount : Uint256):
-    let (caller) = get_caller_address()
-    assert_not_zero(caller)
-    assert_not_zero(spender)
-    uint256_check(amount)
-    ERC20_allowances.write(caller, spender, amount)
-    return ()
-end
+# func ERC20_approve{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(spender : felt, amount : Uint256):
+#     let (caller) = get_caller_address()
+#     assert_not_zero(caller)
+#     assert_not_zero(spender)
+#     uint256_check(amount)
+#     ERC20_allowances.write(caller, spender, amount)
+#     return ()
+# end
 
-func ERC20_increaseAllowance{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(spender : felt, added_value : Uint256) -> ():
-    alloc_locals
-    uint256_check(added_value)
-    let (local caller) = get_caller_address()
-    let (local current_allowance : Uint256) = ERC20_allowances.read(caller, spender)
+# func ERC20_increaseAllowance{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(spender : felt, added_value : Uint256) -> ():
+#     alloc_locals
+#     uint256_check(added_value)
+#     let (local caller) = get_caller_address()
+#     let (local current_allowance : Uint256) = ERC20_allowances.read(caller, spender)
 
-    # add allowance
-    let (local new_allowance : Uint256, is_overflow) = uint256_add(current_allowance, added_value)
-    assert (is_overflow) = 0
+#     # add allowance
+#     let (local new_allowance : Uint256, is_overflow) = uint256_add(current_allowance, added_value)
+#     assert (is_overflow) = 0
 
-    ERC20_approve(spender, new_allowance)
-    return ()
-end
+#     ERC20_approve(spender, new_allowance)
+#     return ()
+# end
 
-func ERC20_decreaseAllowance{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(spender : felt, subtracted_value : Uint256) -> ():
-    alloc_locals
-    uint256_check(subtracted_value)
-    let (local caller) = get_caller_address()
-    let (local current_allowance : Uint256) = ERC20_allowances.read(owner=caller, spender=spender)
-    let (local new_allowance : Uint256) = uint256_sub(current_allowance, subtracted_value)
+# func ERC20_decreaseAllowance{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(spender : felt, subtracted_value : Uint256) -> ():
+#     alloc_locals
+#     uint256_check(subtracted_value)
+#     let (local caller) = get_caller_address()
+#     let (local current_allowance : Uint256) = ERC20_allowances.read(owner=caller, spender=spender)
+#     let (local new_allowance : Uint256) = uint256_sub(current_allowance, subtracted_value)
 
-    # validates new_allowance < current_allowance and returns 1 if true   
-    let (enough_allowance) = uint256_lt(new_allowance, current_allowance)
-    assert_not_zero(enough_allowance)
+#     # validates new_allowance < current_allowance and returns 1 if true   
+#     let (enough_allowance) = uint256_lt(new_allowance, current_allowance)
+#     assert_not_zero(enough_allowance)
 
-    ERC20_approve(spender, new_allowance)
-    return ()
-end
+#     ERC20_approve(spender, new_allowance)
+#     return ()
+# end
 
 func ERC20_mint{
         syscall_ptr : felt*, 
@@ -218,28 +218,28 @@ func ERC20_mint{
     return ()
 end
 
-func ERC20_burn{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(account : felt, amount : Uint256):
-    alloc_locals
-    assert_not_zero(account)
-    uint256_check(amount)
+# func ERC20_burn{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(account : felt, amount : Uint256):
+#     alloc_locals
+#     assert_not_zero(account)
+#     uint256_check(amount)
 
-    let (balance : Uint256) = ERC20_balances.read(account)
-    # validates amount <= balance and returns 1 if true
-    let (enough_balance) = uint256_le(amount, balance)
-    assert_not_zero(enough_balance)
+#     let (balance : Uint256) = ERC20_balances.read(account)
+#     # validates amount <= balance and returns 1 if true
+#     let (enough_balance) = uint256_le(amount, balance)
+#     assert_not_zero(enough_balance)
     
-    let (new_balance : Uint256) = uint256_sub(balance, amount)
-    ERC20_balances.write(account, new_balance)
+#     let (new_balance : Uint256) = uint256_sub(balance, amount)
+#     ERC20_balances.write(account, new_balance)
 
-    let (supply : Uint256) = ERC20_total_supply.read()
-    let (new_supply : Uint256) = uint256_sub(supply, amount)
-    ERC20_total_supply.write(new_supply)
-    return ()
-end
+#     let (supply : Uint256) = ERC20_total_supply.read()
+#     let (new_supply : Uint256) = uint256_sub(supply, amount)
+#     ERC20_total_supply.write(new_supply)
+#     return ()
+# end
 
 #
 # Internal

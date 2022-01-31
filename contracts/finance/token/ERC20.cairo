@@ -9,12 +9,12 @@ from contracts.finance.token.ERC20_base import (
     ERC20_totalSupply,
     ERC20_decimals,
     ERC20_balanceOf,
-    ERC20_allowance,
+    # ERC20_allowance,
 
     ERC20_initializer,
     ERC20_approve,
-    ERC20_increaseAllowance,
-    ERC20_decreaseAllowance,
+    # ERC20_increaseAllowance,
+    # ERC20_decreaseAllowance,
     ERC20_transfer,
     ERC20_transferFrom
 )
@@ -88,15 +88,15 @@ func balanceOf{
     return (balance)
 end
 
-@view
-func allowance{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(owner : felt, spender : felt) -> (remaining : Uint256):
-    let (remaining : Uint256) = ERC20_allowance(owner, spender)
-    return (remaining)
-end
+# @view
+# func allowance{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(owner : felt, spender : felt) -> (remaining : Uint256):
+#     let (remaining : Uint256) = ERC20_allowance(owner, spender)
+#     return (remaining)
+# end
 
 #
 # Externals
@@ -139,24 +139,24 @@ func approve{
     return (1)
 end
 
-@external
-func increaseAllowance{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(spender : felt, added_value : Uint256) -> (success : felt):
-    ERC20_increaseAllowance(spender, added_value)
-    # Cairo equivalent to 'return (true)'
-    return (1)
-end
+# @external
+# func increaseAllowance{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(spender : felt, added_value : Uint256) -> (success : felt):
+#     ERC20_increaseAllowance(spender, added_value)
+#     # Cairo equivalent to 'return (true)'
+#     return (1)
+# end
 
-@external
-func decreaseAllowance{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(spender : felt, subtracted_value : Uint256) -> (success : felt):
-    ERC20_decreaseAllowance(spender, subtracted_value)
-    # Cairo equivalent to 'return (true)'
-    return (1)
-end 
+# @external
+# func decreaseAllowance{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*,
+#         range_check_ptr
+#     }(spender : felt, subtracted_value : Uint256) -> (success : felt):
+#     ERC20_decreaseAllowance(spender, subtracted_value)
+#     # Cairo equivalent to 'return (true)'
+#     return (1)
+# end 
