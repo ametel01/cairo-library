@@ -16,9 +16,9 @@ from contracts.finance.token.IERC20 import IERC20
 func _token_address() -> (address : felt):
 end
 
-@storage_var
-func _payees_balances(address : felt) -> (balance : Uint256):
-end
+# @storage_var
+# func _payees_balances(address : felt) -> (balance : Uint256):
+# end
 
 @storage_var
 func _total_shares() -> (shares : Uint256):

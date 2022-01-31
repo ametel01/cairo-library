@@ -9,8 +9,7 @@ from starkware.cairo.common.uint256 import (
     uint256_signed_div_rem)
 from contracts.finance.PaymentSplitter_base import (
     _token_address, _total_shares, _total_released, _shares, _released_to_payee, _payees,
-     _payees_balances, pending_payment, add_payee,
-    add_payee_recursive)
+     _payees_balances, pending_payment, add_payee, add_payee_recursive)
 
 #
 # Contstructor
@@ -48,7 +47,8 @@ func balance_of{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(address : felt) -> (balance : Uint256):
-    let (res) = _payees_balances.read(address)
+    let (token_address) = _token_address.read()
+    let (res) = IERC20.balanceOf(contract_address=token_address, account=address)
     return (res)
 end
 
