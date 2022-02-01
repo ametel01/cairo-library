@@ -7,10 +7,11 @@ from starkware.starknet.testing.contract import StarknetContract
 from starkware.starknet.compiler.compile import (
     compile_starknet_files)
 
-CONTRACT_FILE = "/home/ametel01/Source/Cairo/cairo_library/contracts/finance/token/ERC20.cairo"
+CONTRACT_FILE = os.path.realpath(os.path.join(os.path.dirname(
+    __file__), '..', 'contracts', 'finance', 'token', 'ERC20.cairo'))
 
 
-@pytest.mark.asyncio
+@ pytest.mark.asyncio
 async def test_constructor():
     contract_definition = compile_starknet_files(
         [CONTRACT_FILE], debug_info=True)
