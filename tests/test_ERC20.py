@@ -22,5 +22,5 @@ async def test_constructor():
     assert name.result.name == 1111
     symbol = await contract.symbol().call()
     assert symbol.result.symbol == 2222
-
- # print(CONTRACT_FILE)
+    supply = await contract.totalSupply().call()
+    assert supply.result.totalSupply == (10000, 0)
