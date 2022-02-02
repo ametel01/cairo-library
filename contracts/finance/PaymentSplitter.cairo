@@ -33,6 +33,7 @@ func constructor{
         shares : Uint256*):
     assert payees_len = shares_len
     assert_not_zero(token_address)
+    _token_address.write(token_address)
     assert_not_zero(payees_len)
     add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
     return ()
@@ -107,7 +108,7 @@ func release_erc20{
         }(account : felt):
     alloc_locals
     local syscalls 
-    assert_not_zero(account)
+    #assert_not_zero(account)
     let (account_shares) = _shares.read(account)
     let (shares_check) = uint256_lt(Uint256(0,0), account_shares)
     assert_not_zero(shares_check)

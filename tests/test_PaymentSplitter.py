@@ -14,21 +14,23 @@ CONTRACT_FILE = os.path.realpath(os.path.join(os.path.dirname(
     __file__), '..', 'contracts', 'finance', 'PaymentSplitter.cairo'))
 
 
-@pytest.fixture
-async def token():
-    # contract_definition = compile_starknet_files(
-    #     [TOKEN_FILE], debug_info=True)
-    starknet = await Starknet.empty()
-    contract = await starknet.deploy(source=TOKEN_FILE,
-                                     constructor_calldata=[1111, 2222, 10000, 00, 12345])
-    return contract.contract_address
+# @pytest.fixture
+# async def token():
+#     # contract_definition = compile_starknet_files(
+#     #     [TOKEN_FILE], debug_info=True)
+#     starknet = await Starknet.empty()
+#     contract = await starknet.deploy(source=TOKEN_FILE,
+#                                      constructor_calldata=[1111, 2222, 10000, 00, 12345])
+#     return contract.contract_address
 
 
 @pytest.fixture
-async def contract(token):
+async def contract():
     starknet = await Starknet.empty()
+    token = await starknet.deploy(source=TOKEN_FILE,
+                                  constructor_calldata=[1111, 2222, 10000, 00, 12345])
     contract = await starknet.deploy(source=CONTRACT_FILE,
-                                     constructor_calldata=[token,
+                                     constructor_calldata=[token.contract_address,
                                                            3, 12345, 98765, 56565,
                                                            3, 65, 00, 75, 0, 60, 0])
     return contract
@@ -51,7 +53,7 @@ async def test_constructor(contract):
 
 
 @pytest.mark.asyncio
-async def test_release(contract):
+async def test_release(contract,):
     await contract.release_erc20(12345).invoke()
     data = await contract.balance_of(12345).call()
     assert data.result.balance == (3250, 0)
