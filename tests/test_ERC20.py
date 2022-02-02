@@ -13,8 +13,6 @@ CONTRACT_FILE = os.path.realpath(os.path.join(os.path.dirname(
 
 @pytest.fixture
 async def contract():
-    contract_definition = compile_starknet_files(
-        [CONTRACT_FILE], debug_info=True)
     starknet = await Starknet.empty()
     contract = await starknet.deploy(source=CONTRACT_FILE,
                                      constructor_calldata=[1111, 2222, 10000, 00, 12345])

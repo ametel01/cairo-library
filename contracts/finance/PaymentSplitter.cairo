@@ -63,16 +63,16 @@ func tot_shares{
     return (tot_shares=shares)
 end
 
-# @dev Getter for the total amount of Ether already released.
-@view
-func tot_released{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*, 
-        range_check_ptr
-        }() -> (tot_released : Uint256):
-    let (released) = _total_released.read()
-    return (tot_released=released)
-end
+# # @dev Getter for the total amount of Ether already released.
+# @view
+# func tot_released{
+#         syscall_ptr : felt*, 
+#         pedersen_ptr : HashBuiltin*, 
+#         range_check_ptr
+#         }() -> (tot_released : Uint256):
+#     let (released) = _total_released.read()
+#     return (tot_released=released)
+# end
 
 # @dev Getter for the amount of shares held by an account.
 @view
