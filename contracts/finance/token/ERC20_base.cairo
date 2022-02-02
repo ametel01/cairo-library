@@ -57,51 +57,6 @@ func ERC20_initializer{
     return ()
 end
 
-# func ERC20_name{
-#         syscall_ptr : felt*,
-#         pedersen_ptr : HashBuiltin*,
-#         range_check_ptr
-#     }() -> (name : felt):
-#     let (name) = ERC20_name_.read()
-#     return (name)
-# end
-
-# func ERC20_symbol{
-#         syscall_ptr : felt*,
-#         pedersen_ptr : HashBuiltin*,
-#         range_check_ptr
-#     }() -> (symbol : felt):
-#     let (symbol) = ERC20_symbol_.read()
-#     return (symbol)
-# end
-
-# func ERC20_totalSupply{
-#         syscall_ptr : felt*, 
-#         pedersen_ptr : HashBuiltin*,
-#         range_check_ptr
-#     }() -> (totalSupply: Uint256):
-#     let (totalSupply : Uint256) = ERC20_total_supply.read()
-#     return (totalSupply)
-# end
-
-# func ERC20_decimals{
-#         syscall_ptr : felt*, 
-#         pedersen_ptr : HashBuiltin*,
-#         range_check_ptr
-#     }() -> (decimals : felt):
-#     let (decimals) = ERC20_decimals_.read()
-#     return (decimals)
-# end
-
-# func ERC20_balanceOf{
-#         syscall_ptr : felt*, 
-#         pedersen_ptr : HashBuiltin*,
-#         range_check_ptr
-#     }(account : felt) -> (balance : Uint256):
-#     let (balance : Uint256) = ERC20_balances.read(account)
-#     return (balance)
-# end
-
 func ERC20_transfer{
         syscall_ptr : felt*, 
         pedersen_ptr : HashBuiltin*,
