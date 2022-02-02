@@ -33,6 +33,7 @@ async def test_constructor(contract):
 
 @pytest.mark.asyncio
 async def test_tansfer(contract):
-    await contract.transfer(98765, (9999, 0)).invoke()
+    transfer_ok = await contract.transfer(98765, (9999, 0)).invoke()
+    assert transfer_ok.result.success == 1
     new_balance = await contract.balanceOf(98765).call()
     assert new_balance.result.balance == (9999, 0)
