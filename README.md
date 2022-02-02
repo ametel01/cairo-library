@@ -12,7 +12,7 @@ Allows to split ERC20 token payments among a group of accounts. The sender does 
 
 The split can be in equal parts or in any other arbitrary proportion. The way this is specified is by assigning each account to a number of shares. Of all the Ether that this contract receives, each account will then be able to claim an amount proportional to the percentage of total shares they were assigned.
 
-It requires an ERC20 contract to be deployed with the full token balance minted to an account (this set up is temporary, i am thinking about a multisig for this purpose)
+It requires an ERC20 contract to be deployed with the full token balance minted to an account (this set up is temporary, i am thinking about a multisig for this purpose). The ERC20 contracts in this repository have been modified to be compatible with PaymentSplitter.
 
 `PaymentSplitter` follows a _pull payment_ model. This means that payments are not automatically forwarded to the accounts but kept in this contract, and the actual transfer is triggered as a separate step by calling the {release} function.
 
