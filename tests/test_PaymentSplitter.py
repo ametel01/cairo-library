@@ -24,13 +24,18 @@ async def token():
     return contract.contract_address
 
 
-@pytest.mark.asyncio
-async def test_constructor(token):
+@pytest.fixture
+async def contract(token):
     starknet = await Starknet.empty()
     contract = await starknet.deploy(source=CONTRACT_FILE,
                                      constructor_calldata=[token,
                                                            3, 12345, 98765, 56565,
                                                            3, 65, 00, 75, 0, 60, 0])
+    return contract
+
+
+@pytest.mark.asyncio
+async def test_constructor(contract):
 
     data = await contract.tot_shares().call()
     assert data.result.tot_shares == (200, 0)
@@ -44,3 +49,7 @@ async def test_constructor(token):
     assert data.result.payee == 12345
     data = await contract.payee(0).call()
     assert data.result.payee == 56565
+
+
+# @pytest.mark.asyncio
+# async def test_release()
