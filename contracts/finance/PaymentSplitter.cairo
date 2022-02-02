@@ -9,7 +9,7 @@ from starkware.cairo.common.uint256 import (
     uint256_signed_div_rem)
 from contracts.finance.PaymentSplitter_base import (
     _token_address, _total_shares, _total_released, _shares, _released_to_payee, _payees,
-     _payees_balances, pending_payment, add_payee, add_payee_recursive)
+    pending_payment, add_payee, add_payee_recursive)
 
 #
 # Contstructor
