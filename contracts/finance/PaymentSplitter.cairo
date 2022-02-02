@@ -96,9 +96,6 @@ func payee{
     return (payee=payee)
 end
 
-# # add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
-#     return()
-# end
 
 # @dev Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the
 # total shares and their previous withdrawals.

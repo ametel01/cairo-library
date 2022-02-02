@@ -35,5 +35,7 @@ async def test_constructor(contract):
 async def test_tansfer(contract):
     transfer_ok = await contract.transfer(98765, (9999, 0)).invoke()
     assert transfer_ok.result.success == 1
-    new_balance = await contract.balanceOf(98765).call()
-    assert new_balance.result.balance == (9999, 0)
+    receiver_balance = await contract.balanceOf(98765).call()
+    assert receiver_balance.result.balance == (9999, 0)
+    sender_balance = await contract.balanceOf(12345).call()
+    assert sender_balance.result.balance == (10000-9999, 0)

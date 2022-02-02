@@ -16,10 +16,6 @@ from contracts.finance.token.IERC20 import IERC20
 func _token_address() -> (address : felt):
 end
 
-# @storage_var
-# func _payees_balances(address : felt) -> (balance : Uint256):
-# end
-
 @storage_var
 func _total_shares() -> (shares : Uint256):
 end
@@ -40,17 +36,6 @@ end
 @storage_var
 func _payees(i : felt) -> (payee : felt):
 end
-
-# # @dev total amount of token released.
-# # @param erc20: address of token contract.
-# @storage_var
-# func _erc20_total_released(erc20 : felt) -> (amount : Uint256):
-# end
-
-# # @dev total amount of token ierc20 released to an address
-# @storage_var
-# func _erc20_realeased(erc20 : felt, address : felt) -> (res : Uint256):
-# end
 
 #
 # Internal functions
