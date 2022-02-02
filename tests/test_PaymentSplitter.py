@@ -36,7 +36,6 @@ async def contract(token):
 
 @pytest.mark.asyncio
 async def test_constructor(contract):
-
     data = await contract.tot_shares().call()
     assert data.result.tot_shares == (200, 0)
     data = await contract.shares(12345).call()
@@ -51,5 +50,8 @@ async def test_constructor(contract):
     assert data.result.payee == 56565
 
 
-# @pytest.mark.asyncio
-# async def test_release()
+@pytest.mark.asyncio
+async def test_release(contract):
+    await contract.release_erc20(12345).invoke()
+    data = await contract.balance_of(12345).call()
+    assert data.result.balance == (3250, 0)

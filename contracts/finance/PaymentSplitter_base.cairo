@@ -53,7 +53,7 @@ func pending_payment{
     let (account_shares) = _shares.read(account)
     let (tot_shares) = _total_shares.read()
     let (token_address) = _token_address.read()
-    let (tot_supply) = IERC20.totalSupply(token_address)
+    let (tot_supply) = IERC20.totalSupply(contract_address=token_address)
     let (dividend, _) = uint256_mul(tot_supply, account_shares)
     let (res, _) = uint256_signed_div_rem(dividend, tot_shares)
     return (res=res)

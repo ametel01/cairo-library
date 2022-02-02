@@ -48,8 +48,8 @@ func balance_of{
         range_check_ptr
         }(address : felt) -> (balance : Uint256):
     let (token_address) = _token_address.read()
-    let (res) = IERC20.balanceOf(contract_address=token_address, account=address)
-    return (res)
+    let (balance) = IERC20.balanceOf(contract_address=token_address, account=address)
+    return (balance)
 end
 
 # @dev Getter for the total shares held by payees.
