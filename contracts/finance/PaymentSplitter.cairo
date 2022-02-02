@@ -15,8 +15,8 @@ from contracts.finance.PaymentSplitter_base import (
 # Contstructor
 #
 
-# @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned the number of shares at
-# the matching position in the `shares` array.
+# @dev Creates an instance of `PaymentSplitter` where each account in `payees` is assigned 
+# the number of shares at the matching position in the `shares` array.
 #
 # All addresses in `payees` must be non-zero. Both arrays must have the same non-zero length, and there must be no
 # duplicates in `payees`.
@@ -87,7 +87,7 @@ func payee{
 end
 
 
-# @dev Triggers a transfer to `account` of the amount of Ether they are owed, according to their percentage of the
+# @dev Triggers a transfer to `account` of the amount of token they are owed, according to their percentage of the
 # total shares and their previous withdrawals.
 @external
 func release_erc20{
