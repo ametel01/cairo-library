@@ -10,25 +10,25 @@ from starkware.cairo.common.uint256 import (
 const SECONDS_PER_YEAR = 31536000
 
 @storage_var
-func _balance() -> (balance : Uint256):
+func vesting_wallet_balance() -> (balance : Uint256):
 end
 
 @storage_var
-func _token_released() -> (released : Uint256):
+func vesting_wallet_token_released() -> (released : Uint256):
 end
 
 @storage_var
-func _beneficiary() -> (address : felt):
+func vesting_wallet_beneficiary() -> (address : felt):
 end
 
 # Start block of the vesting
 @storage_var
-func _start() -> (block : felt):
+func vesting_wallet_start() -> (timestamp : felt):
 end
 
 # Duration in number of blocks of the vesting
 @storage_var
-func _duration() -> (n_blocks : felt):
+func vesting_wallet_duration() -> (n_seconds : felt):
 end
 
 @constructor
@@ -41,8 +41,8 @@ func constructor{
         durantion_in_seconds : felt):
     assert_not_zero(beneficiary_address)
     assert_not_zero(duration)
-    _beneficiary.write(beneficiary_address)
-    _duration.write(durantion_in_seconds)
+    vesting_wallet_beneficiary.write(beneficiary_address)
+    vesting_wallet_duration.write(durantion_in_seconds)
     return()
 end
 
@@ -52,7 +52,7 @@ func beneficiary{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }() -> (res : felt):
-    let (res) = _beneficiary.read()
+    let (res) = vesting_wallet_beneficiary.read()
     return(res=res)
 end
 
@@ -62,7 +62,7 @@ func start_block{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }() -> (res : felt):
-    let (res) = _start.read()
+    let (res) = vesting_wallet_start.read()
     return(res=res)
 end
 
@@ -72,7 +72,7 @@ func duration{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }() -> (res : felt):
-    let (res) = _duration.read()
+    let (res) = vesting_wallet_duration.read()
     return(res=res)
 end
 
@@ -82,6 +82,6 @@ func released{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }() -> (res : Uint256):
-    let (res) = _token_released.read()
+    let (res) = vesting_wallet_token_released.read()
     return(res=res)
 end
