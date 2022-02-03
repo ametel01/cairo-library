@@ -28,7 +28,7 @@ end
 
 # Duration in number of blocks of the vesting
 @storage_var
-func vesting_wallet_duration() -> (n_seconds : felt):
+func vesting_wallet_duration() -> (durantion : felt):
 end
 
 @constructor
@@ -41,6 +41,8 @@ func constructor{
         durantion_in_seconds : felt):
     assert_not_zero(beneficiary_address)
     assert_not_zero(duration)
+    let (start) = get_block_timestamp()
+    vesting_wallet_start.write(start)
     vesting_wallet_beneficiary.write(beneficiary_address)
     vesting_wallet_duration.write(durantion_in_seconds)
     return()
@@ -57,7 +59,7 @@ func beneficiary{
 end
 
 @external
-func start_block{
+func start_timestamp{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
@@ -77,7 +79,7 @@ func duration{
 end
 
 @external
-func released{
+func token_released{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
@@ -85,3 +87,4 @@ func released{
     let (res) = vesting_wallet_token_released.read()
     return(res=res)
 end
+

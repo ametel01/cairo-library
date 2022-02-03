@@ -2,11 +2,9 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
-from contracts.finance.token.IERC20 import IERC20 
-# from Cairo.cairo_library.contracts.finance.token.ERC20_base import ERC20_transfer
+from contracts.finance.token.IPSERC20 import IPSERC20 
 from starkware.cairo.common.uint256 import (
-    Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul,
-    uint256_signed_div_rem)
+    Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul,uint256_signed_div_rem)
 from contracts.finance.PaymentSplitter_base import (
     payment_splitter_token_address, payment_splitter_total_shares, payment_splitter_total_released, payment_splitter_shares, payment_splitter_released_to_payee, payment_splitter_payees,
     pending_payment, add_payee, add_payee_recursive)
@@ -49,7 +47,7 @@ func balance_of{
         range_check_ptr
         }(address : felt) -> (balance : Uint256):
     let (token_address) = payment_splitter_token_address.read()
-    let (balance) = IERC20.balanceOf(contract_address=token_address, account=address)
+    let (balance) = IPSERC20.balanceOf(contract_address=token_address, account=address)
     return (balance)
 end
 
@@ -97,7 +95,7 @@ func release_erc20{
         }(account : felt):
     alloc_locals
     local syscalls 
-    #assert_not_zero(account)
+    assert_not_zero(account)
     let (account_shares) = payment_splitter_shares.read(account)
     let (shares_check) = uint256_lt(Uint256(0,0), account_shares)
     assert_not_zero(shares_check)
@@ -105,6 +103,6 @@ func release_erc20{
     let (already_released : Uint256) = payment_splitter_total_released.read()
     let (amount_to_release : Uint256) = pending_payment(account,total_received,already_released)
     let (token_address) = payment_splitter_token_address.read()
-    IERC20.transfer(contract_address=token_address, recipient=account, amount=amount_to_release)
+    IPSERC20.transfer(contract_address=token_address, recipient=account, amount=amount_to_release)
     return()
 end

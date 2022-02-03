@@ -3,16 +3,16 @@
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.uint256 import Uint256
 
-from contracts.finance.token.ERC20_base import (
-    ERC20_name,
-    ERC20_symbol,
-    ERC20_total_supply,
-    ERC20_decimals,
-    ERC20_balances,
+from contracts.finance.token.PSERC20_base import (
+    PSERC20_name,
+    PSERC20_symbol,
+    PSERC20_total_supply,
+    PSERC20_decimals,
+    PSERC20_balances,
 
-    ERC20_initializer,
-    ERC20_transfer,
-    ERC20_transferFrom
+    PSERC20_initializer,
+    PSERC20_transfer,
+    PSERC20_transferFrom
 )
 
 @constructor
@@ -26,7 +26,7 @@ func constructor{
         initial_supply : Uint256,
         recipient : felt
     ):
-    ERC20_initializer(name, symbol, initial_supply, recipient)
+    PSERC20_initializer(name, symbol, initial_supply, recipient)
     return ()
 end
 
@@ -40,7 +40,7 @@ func name{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }() -> (name : felt):
-    let (name) = ERC20_name.read()
+    let (name) = PSERC20_name.read()
     return (name)
 end
 
@@ -50,7 +50,7 @@ func symbol{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }() -> (symbol : felt):
-    let (symbol) = ERC20_symbol.read()
+    let (symbol) = PSERC20_symbol.read()
     return (symbol)
 end
 
@@ -60,7 +60,7 @@ func totalSupply{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }() -> (totalSupply : Uint256):
-    let (totalSupply : Uint256) = ERC20_total_supply.read()
+    let (totalSupply : Uint256) = PSERC20_total_supply.read()
     return (totalSupply)
 end
 
@@ -70,7 +70,7 @@ func decimals{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }() -> (decimals : felt):
-    let (decimals) = ERC20_decimals.read()
+    let (decimals) = PSERC20_decimals.read()
     return (decimals)
 end
 
@@ -80,7 +80,7 @@ func balanceOf{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }(account : felt) -> (balance : Uint256):
-    let (balance : Uint256) = ERC20_balances.read(account)
+    let (balance : Uint256) = PSERC20_balances.read(account)
     return (balance)
 end
 
@@ -90,7 +90,7 @@ func transfer{
         pedersen_ptr : HashBuiltin*,
         range_check_ptr
     }(recipient : felt, amount : Uint256) -> (success : felt):
-    ERC20_transfer(recipient, amount)
+    PSERC20_transfer(recipient, amount)
     # Cairo equivalent to 'return (true)'
     return (1)
 end
@@ -105,7 +105,7 @@ func transferFrom{
         recipient : felt, 
         amount : Uint256
     ) -> (success : felt):
-    ERC20_transferFrom(sender, recipient, amount)
+    PSERC20_transferFrom(sender, recipient, amount)
     # Cairo equivalent to 'return (true)'
     return (1)
 end

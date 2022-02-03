@@ -8,7 +8,7 @@ from starkware.starknet.compiler.compile import (
     compile_starknet_files)
 
 TOKEN_FILE = os.path.realpath(os.path.join(os.path.dirname(
-    __file__), '..', 'contracts', 'finance', 'token', 'ERC20.cairo'))
+    __file__), '..', 'contracts', 'finance', 'token', 'PSERC20.cairo'))
 
 CONTRACT_FILE = os.path.realpath(os.path.join(os.path.dirname(
     __file__), '..', 'contracts', 'finance', 'PaymentSplitter.cairo'))
