@@ -13,28 +13,28 @@ from contracts.finance.token.IERC20 import IERC20
 #
 
 @storage_var
-func _token_address() -> (address : felt):
+func payment_splitter_token_address() -> (address : felt):
 end
 
 @storage_var
-func _total_shares() -> (shares : Uint256):
+func payment_splitter_total_shares() -> (shares : Uint256):
 end
 
 @storage_var
-func _total_released() -> (released : Uint256):
+func payment_splitter_total_released() -> (released : Uint256):
 end
 
 @storage_var
-func _shares(address : felt) -> (shares : Uint256):
+func payment_splitter_shares(address : felt) -> (shares : Uint256):
 end
 
 # @dev amount of shares released to an address.
 @storage_var
-func _released_to_payee(address : felt) -> (amount : Uint256):
+func payment_splitter_released_to_payee(address : felt) -> (amount : Uint256):
 end
 
 @storage_var
-func _payees(i : felt) -> (payee : felt):
+func payment_splitter_payees(i : felt) -> (payee : felt):
 end
 
 #
@@ -50,9 +50,9 @@ func pending_payment{
         }(account : felt, total_received : Uint256, already_released : Uint256) -> (res : Uint256):
     alloc_locals
     local syscalls
-    let (account_shares) = _shares.read(account)
-    let (tot_shares) = _total_shares.read()
-    let (token_address) = _token_address.read()
+    let (account_shares) = payment_splitter_shares.read(account)
+    let (tot_shares) = payment_splitter_total_shares.read()
+    let (token_address) = payment_splitter_token_address.read()
     let (tot_supply) = IERC20.totalSupply(contract_address=token_address)
     let (dividend, _) = uint256_mul(tot_supply, account_shares)
     let (res, _) = uint256_signed_div_rem(dividend, tot_shares)
@@ -70,13 +70,13 @@ func add_payee{
         }(i : felt, address : felt, shares : Uint256):
     assert_not_zero(address)
     # assert_not_zero(shares) # TODO
-    let (account_shares) = _shares.read(address)
+    let (account_shares) = payment_splitter_shares.read(address)
 
-    _payees.write(i, address)
-    _shares.write(address, shares)
-    let (tot_shares) = _total_shares.read()
+    payment_splitter_payees.write(i, address)
+    payment_splitter_shares.write(address, shares)
+    let (tot_shares) = payment_splitter_total_shares.read()
     let (shares_to_write, _) = uint256_add(tot_shares, shares)
-    _total_shares.write(shares_to_write)
+    payment_splitter_total_shares.write(shares_to_write)
     return ()
 end
 # @dev recursively add payees and shares when the contract is deployed

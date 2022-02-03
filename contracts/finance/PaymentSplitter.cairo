@@ -8,7 +8,7 @@ from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul,
     uint256_signed_div_rem)
 from contracts.finance.PaymentSplitter_base import (
-    _token_address, _total_shares, _total_released, _shares, _released_to_payee, _payees,
+    payment_splitter_token_address, payment_splitter_total_shares, payment_splitter_total_released, payment_splitter_shares, payment_splitter_released_to_payee, payment_splitter_payees,
     pending_payment, add_payee, add_payee_recursive)
 
 #
@@ -33,7 +33,7 @@ func constructor{
         shares : Uint256*):
     assert payees_len = shares_len
     assert_not_zero(token_address)
-    _token_address.write(token_address)
+    payment_splitter_token_address.write(token_address)
     assert_not_zero(payees_len)
     add_payee_recursive(lenght=payees_len, payees=payees, shares=shares)
     return ()
@@ -48,7 +48,7 @@ func balance_of{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(address : felt) -> (balance : Uint256):
-    let (token_address) = _token_address.read()
+    let (token_address) = payment_splitter_token_address.read()
     let (balance) = IERC20.balanceOf(contract_address=token_address, account=address)
     return (balance)
 end
@@ -60,7 +60,7 @@ func tot_shares{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }() -> (tot_shares : Uint256):
-    let (shares) = _total_shares.read()
+    let (shares) = payment_splitter_total_shares.read()
     return (tot_shares=shares)
 end
 
@@ -71,7 +71,7 @@ func shares{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(account : felt) -> (shares : Uint256):
-    let (shares) = _shares.read(account)
+    let (shares) = payment_splitter_shares.read(account)
     return (shares=shares)
 end
 
@@ -82,7 +82,7 @@ func payee{
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
         }(id : felt) -> (payee : felt):
-    let (payee) = _payees.read(id)
+    let (payee) = payment_splitter_payees.read(id)
     return (payee=payee)
 end
 
@@ -98,13 +98,13 @@ func release_erc20{
     alloc_locals
     local syscalls 
     #assert_not_zero(account)
-    let (account_shares) = _shares.read(account)
+    let (account_shares) = payment_splitter_shares.read(account)
     let (shares_check) = uint256_lt(Uint256(0,0), account_shares)
     assert_not_zero(shares_check)
-    let (total_received : Uint256) = _released_to_payee.read(account)
-    let (already_released : Uint256) = _total_released.read()
+    let (total_received : Uint256) = payment_splitter_released_to_payee.read(account)
+    let (already_released : Uint256) = payment_splitter_total_released.read()
     let (amount_to_release : Uint256) = pending_payment(account,total_received,already_released)
-    let (token_address) = _token_address.read()
+    let (token_address) = payment_splitter_token_address.read()
     IERC20.transfer(contract_address=token_address, recipient=account, amount=amount_to_release)
     return()
 end
