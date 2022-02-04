@@ -8,7 +8,7 @@ from starkware.cairo.common.uint256 import (
     uint256_signed_div_rem)
 from contracts.finance.token.IPSERC20 import IPSERC20
 
-const SECONDS_PER_YEAR = 31536000
+const SECONDS_PER_YEAR = 86400
 
 @storage_var
 func vesting_wallet_balance() -> (balance : Uint256):
@@ -39,7 +39,7 @@ func constructor{
         range_check_ptr
         }(
         beneficiary_address :felt, 
-        durantion_in_seconds : felt):
+        durantion_in_days : felt):
     assert_not_zero(beneficiary_address)
     assert_not_zero(duration)
     let (start) = get_block_timestamp()
