@@ -45,7 +45,7 @@ func constructor{
     let (start) = get_block_timestamp()
     vesting_wallet_start.write(start)
     vesting_wallet_beneficiary.write(beneficiary_address)
-    vesting_wallet_duration.write(durantion_in_seconds)
+    vesting_wallet_duration.write(durantion_in_days)
     return()
 end
 
