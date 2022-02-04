@@ -12,7 +12,6 @@ from contracts.finance.token.PSERC20_base import (
 
     PSERC20_initializer,
     PSERC20_transfer,
-    PSERC20_transferFrom
 )
 
 @constructor
@@ -95,18 +94,5 @@ func transfer{
     return (1)
 end
 
-@external
-func transferFrom{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(
-        sender : felt, 
-        recipient : felt, 
-        amount : Uint256
-    ) -> (success : felt):
-    PSERC20_transferFrom(sender, recipient, amount)
-    # Cairo equivalent to 'return (true)'
-    return (1)
-end
+
 
