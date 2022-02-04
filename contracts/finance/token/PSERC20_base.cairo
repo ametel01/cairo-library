@@ -67,22 +67,6 @@ func PSERC20_transfer{
     return ()
 end
 
-func PSERC20_transferFrom{
-        syscall_ptr : felt*, 
-        pedersen_ptr : HashBuiltin*,
-        range_check_ptr
-    }(
-        sender : felt, 
-        recipient : felt, 
-        amount : Uint256
-    ) -> ():
-    # let (local caller) = get_caller_address()
-    # let (local caller_allowance : Uint256) = ERC20_allowances.read(owner=sender, spender=caller)
-
-    _transfer(sender, recipient, amount)
-
-    return ()
-end
 
 func PSERC20_mint{
         syscall_ptr : felt*, 
