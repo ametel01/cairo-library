@@ -2,10 +2,11 @@
 
 from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.starknet.common.syscalls import get_block_timestamp
-from starkware.cairo.common.math import assert_not_zero
+from starkware.cairo.common.math import assert_not_zero, assert_le, unsigned_div_rem
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul,
     uint256_signed_div_rem)
+from contracts.finance.token.IPSERC20 import IPSERC20
 
 const SECONDS_PER_YEAR = 31536000
 
@@ -87,4 +88,24 @@ func token_released{
     let (res) = vesting_wallet_token_released.read()
     return(res=res)
 end
+
+func _vesting_schedule{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+        }(total_allocation : Uint256, timestamp : felt) -> (amount_to_release : Uint256):
+    alloc_locals
+    local amount_to_release : Uint256
+    let (local start) = vesting_wallet_start.read()
+    let (local durantion) = vesting_wallet_duration.read()
+    assert_le(start, timestamp)
+    let factor1 = timestamp - start
+    let (div, _) = uint256_mul(Uint256(factor1,0), total_allocation)
+    let (amount, _) = uint256_signed_div_rem(div, Uint256(durantion,0))
+    return (amount_to_release=amount)
+end
+
+
+
+
 

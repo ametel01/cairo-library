@@ -22,13 +22,6 @@ namespace IPSERC20:
     func transfer(recipient : felt, amount : Uint256) -> (success : felt):
     end
 
-    func transferFrom(
-            sender : felt, 
-            recipient : felt, 
-            amount : felt
-        ) -> (success : felt):
-    end
-
     func approve(spender : felt, amount : felt) -> (success : felt):
     end
 end
