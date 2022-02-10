@@ -37,6 +37,10 @@ func constructor{
     return ()
 end
 
+@event
+func release_erc20_called(recipient : felt, amount : Uint256):
+end
+
 #
 # view functions
 #
@@ -104,5 +108,6 @@ func release_erc20{
     let (amount_to_release : Uint256) = pending_payment(account,total_received,already_released)
     let (token_address) = payment_splitter_token_address.read()
     IPSERC20.transfer(contract_address=token_address, recipient=account, amount=amount_to_release)
+    release_erc20_called.emit(recipient=account, amount=amount_to_release)
     return()
 end
