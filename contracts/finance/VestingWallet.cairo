@@ -54,9 +54,9 @@ func beneficiary{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-        }() -> (res : felt):
-    let (res) = vesting_wallet_beneficiary.read()
-    return(res=res)
+        }() -> (address : felt):
+    let (beneficiary) = vesting_wallet_beneficiary.read()
+    return(address=beneficiary)
 end
 
 @external
@@ -74,9 +74,9 @@ func duration{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-        }() -> (res : felt):
-    let (res) = vesting_wallet_duration.read()
-    return(res=res)
+        }() -> (duration : felt):
+    let (days) = vesting_wallet_duration.read()
+    return(duration=days)
 end
 
 @external
