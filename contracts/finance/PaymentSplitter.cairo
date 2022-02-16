@@ -42,7 +42,7 @@ func release_erc20_called(recipient : felt, amount : Uint256):
 end
 
 #
-# view functions
+# Getters
 #
 @view
 func balance_of{

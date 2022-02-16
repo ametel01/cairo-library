@@ -54,9 +54,10 @@ func balance{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-        }() -> (account_balance):
+        }() -> (account_balance : Uint256):
     let (account_balance) = vesting_wallet_balance.read()
     return(account_balance)
+end
 
 @external
 func beneficiary{
@@ -117,7 +118,6 @@ func _vesting_schedule{
         range_check_ptr
         }(total_allocation : Uint256, current_timestamp : felt) -> (amount_to_release : Uint256):
     alloc_locals
-    local amount_to_release : Uint256
     let (local start) = vesting_wallet_start.read()
     let (local durantion) = vesting_wallet_duration.read()
     assert_le(start, current_timestamp)
@@ -126,8 +126,3 @@ func _vesting_schedule{
     let (amount, _) = uint256_signed_div_rem(div, Uint256(durantion,0))
     return (amount_to_release=amount)
 end
-
-
-
-
-
