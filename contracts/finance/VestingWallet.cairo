@@ -50,13 +50,22 @@ func constructor{
 end
 
 @external
+func balance{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+        }() -> (account_balance):
+    let (account_balance) = vesting_wallet_balance.read()
+    return(account_balance)
+
+@external
 func beneficiary{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-        }() -> (address : felt):
+        }() -> (beneficiary : felt):
     let (beneficiary) = vesting_wallet_beneficiary.read()
-    return(address=beneficiary)
+    return(beneficiary)
 end
 
 @external
@@ -64,9 +73,9 @@ func start_timestamp{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-        }() -> (res : felt):
-    let (res) = vesting_wallet_start.read()
-    return(res=res)
+        }() -> (timestamp : felt):
+    let (timestamp) = vesting_wallet_start.read()
+    return(timestamp)
 end
 
 @external
@@ -84,22 +93,35 @@ func token_released{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-        }() -> (res : Uint256):
+        }() -> (released : Uint256):
     let (res) = vesting_wallet_token_released.read()
-    return(res=res)
+    return(released=res)
 end
+
+@external
+func vested_amount{
+        syscall_ptr : felt*,
+        pedersen_ptr : HashBuiltin*, 
+        range_check_ptr
+        }() -> (releaseble_amount : Uint256):
+    let (allocation : Uint256) = vesting_wallet_balance.read()
+    let (timestamp) = get_block_timestamp()
+    let (releaseble_amount) = _vesting_schedule(total_allocation=allocation, current_timestamp=timestamp)
+    return (releaseble_amount)
+end
+
 
 func _vesting_schedule{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
         range_check_ptr
-        }(total_allocation : Uint256, timestamp : felt) -> (amount_to_release : Uint256):
+        }(total_allocation : Uint256, current_timestamp : felt) -> (amount_to_release : Uint256):
     alloc_locals
     local amount_to_release : Uint256
     let (local start) = vesting_wallet_start.read()
     let (local durantion) = vesting_wallet_duration.read()
-    assert_le(start, timestamp)
-    let factor1 = timestamp - start
+    assert_le(start, current_timestamp)
+    let factor1 = current_timestamp - start
     let (div, _) = uint256_mul(Uint256(factor1,0), total_allocation)
     let (amount, _) = uint256_signed_div_rem(div, Uint256(durantion,0))
     return (amount_to_release=amount)
