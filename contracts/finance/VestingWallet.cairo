@@ -12,10 +12,10 @@ from contracts.finance.VestingWallet_base import (
     vesting_wallet_beneficiary, 
     vesting_wallet_duration, 
     vesting_wallet_start,
-    vesting_wallet_token_released
+    vesting_wallet_token_released,
+
+    _vesting_schedule
 )
-
-
 
 @constructor
 func constructor{
@@ -96,17 +96,3 @@ func vested_amount{
     return (releaseble_amount)
 end
 
-func _vesting_schedule{
-        syscall_ptr : felt*,
-        pedersen_ptr : HashBuiltin*, 
-        range_check_ptr
-        }(total_allocation : Uint256, current_timestamp : felt) -> (amount_to_release : Uint256):
-    alloc_locals
-    let (local start) = vesting_wallet_start.read()
-    let (local durantion) = vesting_wallet_duration.read()
-    assert_le(start, current_timestamp)
-    let factor1 = current_timestamp - start
-    let (div, _) = uint256_mul(Uint256(factor1,0), total_allocation)
-    let (amount, _) = uint256_signed_div_rem(div, Uint256(durantion,0))
-    return (amount_to_release=amount)
-end

@@ -6,7 +6,7 @@ from starkware.starknet.common.syscalls import get_caller_address
 from starkware.cairo.common.uint256 import (
     Uint256, uint256_add, uint256_sub, uint256_le, uint256_lt, uint256_check, uint256_mul, uint256_signed_div_rem
 )
-from contracts.finance.token.IPSERC20 import IPSERC20
+from contracts.finance.token.IERC20 import IERC20
 
 #
 # storage
