@@ -27,13 +27,13 @@ async def contract():
 @pytest.mark.asyncio
 async def test_constructor(contract):
     data = await contract.beneficiary().call()
-    assert data.result.address == 12345
+    assert data.result.beneficiary == 12345
     data = await contract.duration().call()
     assert data.result.duration == 365
 
 
 @pytest.mark.asyncio
 async def test_vesting_schedule(contract):
-    await contract.vesting_schedule(1000, 00, 180).invoke()
-    data = await contract.vesting_wallet_balance.call()
-    assert data.result.amount_to_release == 100
+    data = await contract.vested_amount().invoke()
+    # data = await contract.balance().call()
+    assert data.result.releaseble_amount == 100

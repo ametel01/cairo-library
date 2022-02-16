@@ -111,7 +111,6 @@ func vested_amount{
     return (releaseble_amount)
 end
 
-
 func _vesting_schedule{
         syscall_ptr : felt*,
         pedersen_ptr : HashBuiltin*, 
